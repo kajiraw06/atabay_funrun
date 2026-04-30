@@ -85,12 +85,10 @@ function fmtDate(isoStr) {
 
 /** Insert a new registration. Returns { data, error } */
 async function saveRegistration(regData) {
-    const { data, error } = await _supabase
+    const { error } = await _supabase
         .from('registrations')
-        .insert([regData])
-        .select()
-        .single();
-    return { data, error };
+        .insert([regData]);
+    return { data: regData, error };
 }
 
 /** Fetch a single registration by reference number via secure RPC. Returns { data, error } */
