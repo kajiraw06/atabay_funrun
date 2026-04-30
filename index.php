@@ -293,8 +293,7 @@ $cat_json = json_encode(array_map(fn($v) => $v['fee'], CATEGORIES));
                 involves physical activity and associated risks. I voluntarily assume all risks of injury or illness
                 that may result from my participation. I agree to abide by all rules and regulations set by the
                 organizers. I consent to the use of my personal information for registration and communication purposes
-                related to this event. Registration fees are non-refundable except in cases of event cancellation
-                by the organizers.
+                related to this event. Registration fees are non-refundable.
             </div>
             <div class="form-check mb-4">
                 <input class="form-check-input" type="checkbox" name="agree_terms" id="agreeTerms" required value="1">
