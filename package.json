@@ -1,0 +1,10 @@
+{
+  "name": "atabay-fun-run-registration",
+  "version": "1.0.0",
+  "description": "Atabay Fiesta Fun Run 2026 — Online Registration",
+  "scripts": {
+    "dev": "npx serve . -l 3000",
+    "start": "npx serve . -l 3000"
+  },
+  "dependencies": {}
+}

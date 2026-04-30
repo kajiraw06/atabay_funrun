@@ -1,0 +1,14 @@
+# Block direct browser access to uploaded files (except viewing via admin)
+# Prevents users from directly opening uploaded PHP or HTML files
+
+Options -Indexes
+
+# Deny direct execution of scripts
+<FilesMatch "\.(php|php3|php4|php5|phtml|pl|py|jsp|asp|sh|cgi)$">
+    Require all denied
+</FilesMatch>
+
+# Allow only image and PDF viewing
+<FilesMatch "\.(jpg|jpeg|png|gif|pdf)$">
+    Require all granted
+</FilesMatch>

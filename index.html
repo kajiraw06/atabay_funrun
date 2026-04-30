@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register — Atabay Fiesta Fun Run 2026</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ── HERO ─────────────────────────────────────────── -->
+<div class="event-hero">
+
+    <div class="badge-pill">🏁&nbsp; Official Online Registration &nbsp;🌊</div>
+    <h1>Atabay Fiesta Fun Run 2026</h1>
+    <div style="font-size:1rem;font-style:italic;opacity:1;margin-bottom:8px;text-shadow:0 1px 2px rgba(0,0,0,.95),0 2px 8px rgba(0,0,0,.8);">
+        &ldquo;Takbo ni Pedro Para sa Kapayapaan&rdquo;
+    </div>
+    <div class="meta">
+        <span>🏁 Race Day: <strong>June 7, 2026</strong></span><br>
+        <span>📅 Registration ends: <strong>May 24, 2026</strong></span><br>
+        <span>📍 Atabay Barangay Hall, Brgy. Atabay, Hilongos, Leyte</span>
+    </div>
+    <div style="margin-top:8px;font-size:.9rem;font-weight:800;color:var(--accent);letter-spacing:1.2px;text-shadow:0 1px 2px rgba(0,0,0,.95),0 2px 8px rgba(0,0,0,.8);">
+        One Run &middot; One Dream &middot; One Peace for Everyone
+    </div>
+
+    <!-- Hero stats strip -->
+    <div class="hero-stats">
+        <div class="h-stat"><div class="hs-n">3</div><div class="hs-l">Race Categories</div></div>
+        <div class="h-stat"><div class="hs-n">₱13,500</div><div class="hs-l">Total Cash Prizes</div></div>
+        <div class="h-stat"><div class="hs-n">🏅 Free</div><div class="hs-l">Finisher Medal</div></div>
+        <div class="h-stat"><div class="hs-n">3K/5K/10K</div><div class="hs-l">Distances</div></div>
+    </div>
+
+    <!-- Countdown to registration deadline -->
+    <div class="cd-wrap">
+        <div class="cd-label">⏳ Registration closes in</div>
+        <div class="cd-boxes">
+            <div class="cd-box"><span id="cd-days">--</span><small>DAYS</small></div>
+            <div class="cd-sep">:</div>
+            <div class="cd-box"><span id="cd-hours">--</span><small>HRS</small></div>
+            <div class="cd-sep">:</div>
+            <div class="cd-box"><span id="cd-mins">--</span><small>MIN</small></div>
+            <div class="cd-sep">:</div>
+            <div class="cd-box"><span id="cd-secs">--</span><small>SEC</small></div>
+        </div>
+    </div>
+
+
+</div>
+
+<!-- Wave divider -->
+<svg class="hero-wave" viewBox="0 0 1440 64" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+  <path d="M0,32 Q180,64 360,32 Q540,0 720,32 Q900,64 1080,32 Q1260,0 1440,32 L1440,0 L0,0 Z" fill="transparent"/>
+</svg>
+
+<!-- ── MAIN ──────────────────────────────────────────── -->
+<div class="container" style="max-width:800px;padding:8px 16px 64px;">
+
+    <!-- Error alert (shown by JS) -->
+    <div id="errorBox" class="alert-error" style="display:none;">
+        <strong>⚠️ Please fix the following:</strong>
+        <ul id="errorList" style="margin:6px 0 0 18px;"></ul>
+    </div>
+
+    <!-- Urgency reminder -->
+    <div class="urgency-bar">
+        🔥 Registration closes <strong>May 24, 2026</strong> — <span id="daysLeftText"></span>Secure your slot now!
+    </div>
+
+    <!-- ── CASH PRIZES ─────────────────────────────── -->
+    <div class="form-card mb-4" style="background:linear-gradient(135deg,#071A07,#0B3A0B);color:#fff;border:2px solid var(--accent);">
+        <div class="section-title" style="color:var(--accent);border-color:var(--accent);">🏆 Cash Prizes</div>
+        <div class="prize-total-banner">Total Prize Pool: <strong>₱13,500</strong></div>
+        <div id="prizePodium" class="prize-podium"></div>
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);text-align:center;">
+            <p style="font-size:.78rem;opacity:.7;margin:0;">
+                ✔ All participants receive: Singlet · Finisher Medal · Race Bib · Hydration · Post-Race Snack · Raffle Entry
+            </p>
+        </div>
+    </div>
+
+    <!-- ── RACE KIT INCLUSIONS ──────────────────────── -->
+    <div class="form-card mb-4">
+        <div class="section-title">🎽 Every Runner Gets</div>
+        <div class="kit-grid">
+            <div class="kit-item"><span class="ki-icon">🎽</span><span class="ki-label">Race Singlet</span></div>
+            <div class="kit-item"><span class="ki-icon">🏅</span><span class="ki-label">Finisher Medal</span></div>
+            <div class="kit-item"><span class="ki-icon">📋</span><span class="ki-label">Race Bib</span></div>
+            <div class="kit-item"><span class="ki-icon">💧</span><span class="ki-label">Hydration Station</span></div>
+            <div class="kit-item"><span class="ki-icon">🍱</span><span class="ki-label">Post-Race Snack</span></div>
+            <div class="kit-item"><span class="ki-icon">🎁</span><span class="ki-label">Raffle Entry</span></div>
+        </div>
+    </div>
+
+    <!-- ── IMPORTANT REMINDERS ─────────────────────── -->
+    <div class="form-card mb-4" style="border-left:4px solid var(--primary);">
+        <div class="section-title" style="color:var(--primary);">⚠️ Important Reminders</div>
+        <ul style="font-size:.9rem;line-height:2;margin:0;padding-left:20px;color:#333;">
+            <li>Registration fee is <strong>non-refundable</strong> except in cases of event cancellation.</li>
+            <li>Participants must be <strong>physically fit</strong> to join the race.</li>
+            <li>Follow all <strong>safety and traffic rules</strong> during the event.</li>
+            <li>Bring your own <strong>water bottle</strong> — let's keep it eco-friendly! ♻️</li>
+            <li>Bring a copy (screenshot/printout) of your <strong>confirmation reference number</strong> on race day.</li>
+        </ul>
+    </div>
+
+    <!-- ── REGISTRATION FORM ────────────────────────── -->
+    <form id="regForm" novalidate>
+
+        <!-- ① PERSONAL INFORMATION -->
+        <div class="form-card">
+            <div class="section-title">① Personal Information</div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">First Name <span class="text-danger">*</span></label>
+                    <input type="text" id="firstName" class="form-control" placeholder="Juan" maxlength="100">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Last Name <span class="text-danger">*</span></label>
+                    <input type="text" id="lastName" class="form-control" placeholder="Dela Cruz" maxlength="100">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                    <input type="email" id="email" class="form-control" placeholder="juan@email.com" maxlength="150">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Mobile Number <span class="text-danger">*</span></label>
+                    <input type="tel" id="phone" class="form-control" placeholder="09XXXXXXXXX" maxlength="15">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Birthdate <span class="text-danger">*</span></label>
+                    <input type="date" id="birthdate" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Gender <span class="text-danger">*</span></label>
+                    <select id="gender" class="form-select">
+                        <option value="">Select…</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Age</label>
+                    <input type="text" id="ageDisplay" class="form-control" readonly placeholder="—" style="background:#f8f8f8;">
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Complete Address <span class="text-danger">*</span></label>
+                    <textarea id="address" class="form-control" rows="2"
+                        placeholder="House/Unit, Street, Barangay, Municipality/City, Province"
+                        maxlength="500"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- ② EMERGENCY CONTACT -->
+        <div class="form-card">
+            <div class="section-title">② Emergency Contact</div>
+            <div class="row g-3">
+                <div class="col-md-7">
+                    <label class="form-label">Contact Person Name <span class="text-danger">*</span></label>
+                    <input type="text" id="emergencyName" class="form-control" placeholder="Full name" maxlength="150">
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label">Contact Number <span class="text-danger">*</span></label>
+                    <input type="tel" id="emergencyPhone" class="form-control" placeholder="09XXXXXXXXX" maxlength="15">
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label">Relationship <span class="text-danger">*</span></label>
+                    <select id="emergencyRelationship" class="form-select">
+                        <option value="">Select…</option>
+                        <option>Spouse</option>
+                        <option>Parent</option>
+                        <option>Sibling</option>
+                        <option>Child</option>
+                        <option>Relative</option>
+                        <option>Friend</option>
+                        <option>Guardian</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- ③ RACE CATEGORY & SHIRT SIZE -->
+        <div class="form-card">
+            <div class="section-title">③ Race Category & T-Shirt Size</div>
+
+            <label class="form-label mb-2">Choose your category <span class="text-danger">*</span></label>
+            <div class="category-grid mb-3" id="categoryGrid"></div>
+
+            <div id="feeNotice" class="mb-3" style="display:none;font-size:.88rem;">
+                Registration fee: <strong id="feeAmount" style="color:var(--primary);font-size:1rem;"></strong>
+            </div>
+
+            <label class="form-label mb-2">T-Shirt Size <span class="text-danger">*</span></label>
+            <div class="size-grid" id="sizeGrid"></div>
+            <div class="mt-2" style="font-size:.78rem;color:var(--muted);">
+                Actual shirt will be given during race kit claiming.
+            </div>
+        </div>
+
+        <!-- ④ PAYMENT -->
+        <div class="form-card">
+            <div class="section-title">④ Payment Method</div>
+            <div class="payment-tabs mb-3">
+                <div class="pay-option">
+                    <input type="radio" name="paymentMethod" id="pm_gcash" value="gcash">
+                    <label for="pm_gcash"><span class="pay-icon">💚</span> GCash</label>
+                </div>
+                <div class="pay-option">
+                    <input type="radio" name="paymentMethod" id="pm_paymaya" value="paymaya">
+                    <label for="pm_paymaya"><span class="pay-icon">💙</span> PayMaya / Maya</label>
+                </div>
+                <div class="pay-option">
+                    <input type="radio" name="paymentMethod" id="pm_cash" value="cash">
+                    <label for="pm_cash"><span class="pay-icon">💵</span> Cash (Walk-in)</label>
+                </div>
+            </div>
+
+            <!-- GCash instructions -->
+            <div id="box_gcash" class="payment-box">
+                <h6>📲 GCash Payment Instructions</h6>
+                <ol style="font-size:.9rem;margin:0;padding-left:18px;line-height:2;">
+                    <li>Open your <strong>GCash</strong> app → tap <em>Send Money</em>.</li>
+                    <li>Number: <span class="acct" id="gcashNum"></span> — <strong id="gcashNm"></strong></li>
+                    <li>Enter the exact registration fee as the amount.</li>
+                    <li>Note your <strong>GCash Reference Number</strong> from the receipt.</li>
+                    <li>Enter that reference number in the field below.</li>
+                </ol>
+            </div>
+
+            <!-- PayMaya instructions -->
+            <div id="box_paymaya" class="payment-box">
+                <h6>📲 PayMaya / Maya Payment Instructions</h6>
+                <ol style="font-size:.9rem;margin:0;padding-left:18px;line-height:2;">
+                    <li>Open your <strong>Maya</strong> app → tap <em>Send Money</em>.</li>
+                    <li>Number: <span class="acct" id="mayaNum"></span> — <strong id="mayaNm"></strong></li>
+                    <li>Enter the exact registration fee as the amount.</li>
+                    <li>Note your <strong>Maya Reference Number</strong> from the receipt.</li>
+                    <li>Enter that reference number in the field below.</li>
+                </ol>
+            </div>
+
+            <!-- Cash instructions -->
+            <div id="box_cash" class="payment-box cash-box">
+                <h6>💵 Cash Walk-in Instructions</h6>
+                <p style="font-size:.9rem;margin:0;">
+                    Pay your registration fee in cash on the day of kit claiming or during the event.
+                    Bring a copy of your confirmation (reference number) when you pay.
+                </p>
+            </div>
+
+            <!-- Reference number field (GCash / PayMaya) -->
+            <div id="refSection" class="mt-3" style="display:none;">
+                <label class="form-label">GCash / Maya Transaction Reference # <span class="text-danger">*</span></label>
+                <input type="text" id="paymentRef" class="form-control"
+                       placeholder="e.g. 1234567890123" maxlength="13"
+                       inputmode="numeric" pattern="[0-9]{13}"
+                       style="font-family:monospace;letter-spacing:2px;"
+                       oninput="this.value=this.value.replace(/[^0-9]/g,''); validateRefField(this);">
+                <div id="refFieldHint" style="font-size:.78rem;margin-top:5px;color:var(--muted);">
+                    Must be exactly <strong>13 digits</strong> — found in your GCash/Maya app receipt.
+                </div>
+            </div>
+        </div>
+
+        <!-- ⑤ TERMS & SUBMIT -->
+        <div class="form-card">
+            <div class="section-title">⑤ Waiver & Terms</div>
+            <div style="background:#F7F9FC;border-radius:8px;padding:14px;font-size:.83rem;color:var(--muted);
+                        max-height:130px;overflow-y:auto;margin-bottom:14px;line-height:1.7;">
+                I acknowledge that participating in the <strong>Atabay Fiesta Fun Run 2026</strong> involves physical
+                activity and associated risks. I voluntarily assume all risks of injury or illness that may result
+                from my participation. I agree to abide by all rules and regulations set by the organizers.
+                I consent to the use of my personal information for registration and event communication purposes.
+                Registration fees are <strong>non-refundable</strong> except in cases of event cancellation by the organizers.
+            </div>
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="healthDeclaration" value="1">
+                <label class="form-check-label" for="healthDeclaration" style="font-size:.9rem;">
+                    I confirm that I am <strong>physically fit</strong> and have <strong>no known medical condition</strong>
+                    (e.g. heart disease, asthma, hypertension) that would prevent me from safely participating in this run.
+                    <span class="text-danger">*</span>
+                </label>
+            </div>
+            <div class="form-check mb-4">
+                <input class="form-check-input" type="checkbox" id="agreeTerms" value="1">
+                <label class="form-check-label" for="agreeTerms" style="font-size:.9rem;">
+                    I have read and agree to the terms and waiver above. <span class="text-danger">*</span>
+                </label>
+            </div>
+            <button type="submit" class="btn-register" id="submitBtn">
+                🏃 SUBMIT REGISTRATION
+            </button>
+            <p class="text-center mt-3" style="font-size:.8rem;color:var(--muted);">
+                You will receive a reference number immediately after submitting.
+            </p>
+        </div>
+
+    </form>
+</div>
+
+<!-- Footer -->
+<div style="background:linear-gradient(135deg,#003566,#0077B6);color:rgba(255,255,255,.72);text-align:center;padding:28px 16px;font-size:.84rem;line-height:2.2;border-top:4px solid var(--teal-l);">
+    <div style="font-size:1.1rem;font-weight:900;color:#fff;letter-spacing:.5px;margin-bottom:4px;">
+        🌊 Atabay Fiesta Fun Run 2026
+    </div>
+    <div style="opacity:.65;font-size:.75rem;letter-spacing:.5px;margin-bottom:10px;">
+        Brgy. Atabay, Hilongos, Leyte &nbsp;·&nbsp; Run by the Sea 🏃
+    </div>
+    Onsite: <strong style="color:var(--accent);">Welcho M. Labides</strong> — 09208872740 &nbsp;|&nbsp;
+    Online: <strong style="color:var(--accent);">Raul Urgel</strong> — +63946-713-7308<br>
+    <div style="margin-top:8px;opacity:.45;font-size:.72rem;">&copy; 2026 Barangay Atabay. All rights reserved.</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="app.js"></script>
+<script>
+// ── Build prizes podium ─────────────────────────────────
+(function() {
+    const prizes = CONFIG.cashPrizes;
+    const icons  = { '1st': '🥇', '2nd': '🥈', '3rd': '🥉' };
+    const cls    = { '1st': 'gold', '2nd': 'silver', '3rd': 'bronze' };
+    const places = ['1st','2nd','3rd'];
+    const pod = document.getElementById('prizePodium');
+    Object.entries(prizes).forEach(([cat, amounts]) => {
+        let col = `<div class="podium-col"><div class="podium-cat-label">${cat}</div>`;
+        places.forEach(p => {
+            col += `<div class="podium-place ${cls[p]}">
+                <span class="pp-icon">${icons[p]}</span>
+                <span class="pp-place">${p} Place</span>
+                <span class="pp-amount">${peso(amounts[p])}</span>
+            </div>`;
+        });
+        col += `</div>`;
+        pod.innerHTML += col;
+    });
+})();
+
+// ── Build category cards ────────────────────────────────
+(function() {
+    const grid = document.getElementById('categoryGrid');
+    Object.entries(CONFIG.categories).forEach(([key, cat]) => {
+        grid.innerHTML += `
+        <div class="category-card">
+            <input type="radio" name="category" id="cat_${key}" value="${key}">
+            <label for="cat_${key}">
+                <span class="distance">${key}</span>
+                <span class="cat-name">${cat.label}</span>
+                <span class="fee">${peso(cat.fee)}</span>
+                <span style="font-size:.68rem;color:var(--muted);margin-top:4px;line-height:1.4;">${cat.includes}</span>
+            </label>
+        </div>`;
+    });
+    document.querySelectorAll('input[name="category"]').forEach(r => {
+        r.addEventListener('change', () => {
+            document.getElementById('feeAmount').textContent = peso(CONFIG.categories[r.value].fee);
+            document.getElementById('feeNotice').style.display = 'block';
+        });
+    });
+})();
+
+// ── Build shirt size grid ───────────────────────────────
+(function() {
+    const grid = document.getElementById('sizeGrid');
+    ['XS','S','M','L','XL','XXL'].forEach(sz => {
+        grid.innerHTML += `
+        <div class="size-option">
+            <input type="radio" name="shirtSize" id="sz_${sz}" value="${sz}">
+            <label for="sz_${sz}">${sz}</label>
+        </div>`;
+    });
+})();
+
+// ── Set payment account details ─────────────────────────
+document.getElementById('gcashNum').textContent = CONFIG.gcashNumber;
+document.getElementById('gcashNm').textContent  = CONFIG.gcashName;
+document.getElementById('mayaNum').textContent  = CONFIG.paymayaNumber;
+document.getElementById('mayaNm').textContent   = CONFIG.paymayaName;
+
+// ── Payment method toggle ───────────────────────────────
+document.querySelectorAll('input[name="paymentMethod"]').forEach(r => {
+    r.addEventListener('change', () => {
+        ['gcash','paymaya','cash'].forEach(m => document.getElementById('box_'+m).classList.remove('active'));
+        document.getElementById('box_'+r.value).classList.add('active');
+        const needRef = (r.value === 'gcash' || r.value === 'paymaya');
+        document.getElementById('refSection').style.display = needRef ? 'block' : 'none';
+        if (!needRef) document.getElementById('paymentRef').value = '';
+    });
+});
+
+// ── Age calculator ──────────────────────────────────────
+document.getElementById('birthdate').addEventListener('change', function() {
+    if (!this.value) return;
+    const age = Math.floor((Date.now() - new Date(this.value)) / (365.25*24*60*60*1000));
+    document.getElementById('ageDisplay').value = age + ' years old';
+});
+
+// ── GCash/Maya ref# real-time validation ──
+function validateRefField(input) {
+    const hint = document.getElementById('refFieldHint');
+    const val  = input.value;
+    if (val.length === 0) {
+        hint.style.color = 'var(--muted)';
+        hint.innerHTML = 'Must be exactly <strong>13 digits</strong> — found in your GCash/Maya app receipt.';
+    } else if (val.length < 13) {
+        hint.style.color = '#c0392b';
+        hint.innerHTML = `⚠️ ${val.length}/13 digits entered — keep going.`;
+    } else if (/^[0-9]{13}$/.test(val)) {
+        hint.style.color = '#27ae60';
+        hint.innerHTML = '✅ Valid reference number format.';
+    } else {
+        hint.style.color = '#c0392b';
+        hint.innerHTML = '⚠️ Numbers only, exactly 13 digits.';
+    }
+}
+
+// ── Form validation & submit (async — saves to Supabase) ──
+document.getElementById('regForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const errors = [];
+
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName  = document.getElementById('lastName').value.trim();
+    const email     = document.getElementById('email').value.trim();
+    const phone     = document.getElementById('phone').value.trim();
+    const birthdate = document.getElementById('birthdate').value;
+    const gender    = document.getElementById('gender').value;
+    const address   = document.getElementById('address').value.trim();
+    const emergencyName         = document.getElementById('emergencyName').value.trim();
+    const emergencyPhone        = document.getElementById('emergencyPhone').value.trim();
+    const emergencyRelationship = document.getElementById('emergencyRelationship').value;
+    const category  = document.querySelector('input[name="category"]:checked')?.value || '';
+    const shirtSize = document.querySelector('input[name="shirtSize"]:checked')?.value || '';
+    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value || '';
+    const paymentRef = document.getElementById('paymentRef').value.trim();
+    const healthOk  = document.getElementById('healthDeclaration').checked;
+    const agreed    = document.getElementById('agreeTerms').checked;
+
+    if (firstName.length < 2)  errors.push('First name is required (min 2 characters).');
+    if (lastName.length  < 2)  errors.push('Last name is required (min 2 characters).');
+
+    const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRx.test(email))  errors.push('A valid email address is required.');
+
+    const phoneRx = /^[0-9+\-\s]{10,15}$/;
+    if (!phoneRx.test(phone))  errors.push('A valid mobile number is required (e.g. 09XXXXXXXXX).');
+
+    if (!birthdate) {
+        errors.push('Birthdate is required.');
+    } else if (new Date(birthdate) >= new Date()) {
+        errors.push('Birthdate must be in the past.');
+    }
+    if (!gender)  errors.push('Please select your gender.');
+    if (address.length < 10) errors.push('Please provide your complete address.');
+
+    if (emergencyName.length < 2)      errors.push('Emergency contact name is required.');
+    if (!phoneRx.test(emergencyPhone))  errors.push('A valid emergency contact number is required.');
+    if (!emergencyRelationship)          errors.push('Please select your emergency contact\'s relationship to you.');
+
+    if (!category)   errors.push('Please select a race category.');
+    if (!shirtSize)  errors.push('Please select a t-shirt size.');
+    if (!paymentMethod) errors.push('Please select a payment method.');
+
+    if (paymentMethod === 'gcash' || paymentMethod === 'paymaya') {
+        if (!paymentRef) {
+            errors.push('Please enter your GCash / Maya transaction reference number.');
+        } else if (!/^[0-9]{13}$/.test(paymentRef)) {
+            errors.push('GCash / Maya reference number must be exactly 13 digits (numbers only). Check your app receipt.');
+        }
+    }
+
+    if (!healthOk) errors.push('Please confirm your health declaration.');
+    if (!agreed)   errors.push('You must agree to the terms and conditions.');
+
+    // Show errors if any
+    const errorBox  = document.getElementById('errorBox');
+    const errorList = document.getElementById('errorList');
+    if (errors.length > 0) {
+        errorList.innerHTML = errors.map(e => `<li>${e}</li>`).join('');
+        errorBox.style.display = 'block';
+        errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
+    errorBox.style.display = 'none';
+
+    // Build registration object (snake_case — matches Supabase columns)
+    const reg = {
+        reference_number:         generateRef(),
+        first_name:               firstName,
+        last_name:                lastName,
+        email, phone, address, birthdate, gender,
+        emergency_contact_name:   emergencyName,
+        emergency_contact_number: emergencyPhone,
+        emergency_relationship:   emergencyRelationship,
+        category,
+        shirt_size:               shirtSize,
+        payment_method:           paymentMethod,
+        payment_ref:              paymentRef || null,
+        payment_status:           paymentMethod === 'cash' ? 'verified' : 'pending',
+        status:                   'pending',
+    };
+
+    // Disable button while saving
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Submitting…';
+
+    const { error } = await saveRegistration(reg);
+
+    if (error) {
+        btn.disabled = false;
+        btn.textContent = '🏃 SUBMIT REGISTRATION';
+        const errorBox  = document.getElementById('errorBox');
+        const errorList = document.getElementById('errorList');
+        errorList.innerHTML = `<li>Could not save registration: ${error.message}. Please try again.</li>`;
+        errorBox.style.display = 'block';
+        errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
+
+    // Cache in sessionStorage for instant success page display
+    sessionStorage.setItem('last_reg', JSON.stringify(reg));
+
+    // Redirect to success page
+    window.location.href = 'success.html?ref=' + encodeURIComponent(reg.reference_number);
+});
+
+// ── Registration countdown timer ────────────────────────
+(function() {
+    const deadline = new Date('2026-05-24T23:59:59+08:00');
+    const daysEl = document.getElementById('daysLeftText');
+    if (daysEl) {
+        const d = Math.ceil((deadline - Date.now()) / 86400000);
+        if (d > 0) daysEl.textContent = 'Only ' + d + ' day' + (d !== 1 ? 's' : '') + ' left! ';
+    }
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function tick() {
+        const diff = deadline - Date.now();
+        if (diff <= 0) {
+            const wrap = document.querySelector('.cd-wrap');
+            if (wrap) wrap.innerHTML = '<div style="color:var(--accent);font-weight:700;padding:10px;">Registration is now closed.</div>';
+            return;
+        }
+        document.getElementById('cd-days').textContent  = pad(Math.floor(diff / 86400000));
+        document.getElementById('cd-hours').textContent = pad(Math.floor((diff % 86400000) / 3600000));
+        document.getElementById('cd-mins').textContent  = pad(Math.floor((diff % 3600000) / 60000));
+        document.getElementById('cd-secs').textContent  = pad(Math.floor((diff % 60000) / 1000));
+    }
+    tick();
+    setInterval(tick, 1000);
+})();
+</script>
+</body>
+</html>
