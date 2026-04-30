@@ -710,7 +710,18 @@ document.addEventListener('DOMContentLoaded', function() {
     try {
         const { count } = await getRegistrationCount();
         const el = document.getElementById('liveCount');
-        if (el) el.textContent = count;
+        if (!el) return;
+        // Count-up animation
+        const duration = 1400;
+        const start = performance.now();
+        function step(now) {
+            const progress = Math.min((now - start) / duration, 1);
+            // Ease-out cubic
+            const ease = 1 - Math.pow(1 - progress, 3);
+            el.textContent = Math.round(ease * count);
+            if (progress < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
     } catch(e) { /* silent fail */ }
 })();
 
