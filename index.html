@@ -565,14 +565,25 @@ document.getElementById('regForm').addEventListener('submit', async function(e) 
     btn.disabled = true;
     btn.textContent = '⏳ Submitting…';
 
-    const { error } = await saveRegistration(reg);
+    // Retry up to 5 times in case of reference number collision
+    let saveError = null;
+    for (let attempt = 0; attempt < 5; attempt++) {
+        reg.reference_number = generateRef();
+        const { error } = await saveRegistration(reg);
+        if (!error) { saveError = null; break; }
+        // If not a duplicate key error, stop retrying
+        if (!error.message.includes('duplicate key') && !error.message.includes('unique')) {
+            saveError = error; break;
+        }
+        saveError = error;
+    }
 
-    if (error) {
+    if (saveError) {
         btn.disabled = false;
         btn.textContent = '🏃 SUBMIT REGISTRATION';
         const errorBox  = document.getElementById('errorBox');
         const errorList = document.getElementById('errorList');
-        errorList.innerHTML = `<li>Could not save registration: ${error.message}. Please try again.</li>`;
+        errorList.innerHTML = `<li>Could not save registration: ${saveError.message}. Please try again.</li>`;
         errorBox.style.display = 'block';
         errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
