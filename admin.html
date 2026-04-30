@@ -316,29 +316,29 @@ async function renderTable() {
 
     tbody.innerHTML = cachedRegs.map(r => `
         <tr>
-            <td><strong style="font-size:.78rem;">${r.reference_number}</strong></td>
+            <td><strong style="font-size:.78rem;">${esc(r.reference_number)}</strong></td>
             <td>
-                <div class="fw-bold" style="font-size:.84rem;">${r.first_name} ${r.last_name}</div>
-                <div style="font-size:.73rem;color:var(--muted);">${r.email}</div>
-                <div style="font-size:.73rem;color:var(--muted);">${r.phone}</div>
+                <div class="fw-bold" style="font-size:.84rem;">${esc(r.first_name)} ${esc(r.last_name)}</div>
+                <div style="font-size:.73rem;color:var(--muted);">${esc(r.email)}</div>
+                <div style="font-size:.73rem;color:var(--muted);">${esc(r.phone)}</div>
             </td>
-            <td><strong style="color:var(--primary);">${r.category}</strong></td>
-            <td>${r.shirt_size}</td>
-            <td style="font-size:.8rem;">${payLabels[r.payment_method] || r.payment_method}</td>
-            <td style="font-size:.78rem;font-family:monospace;">${r.payment_ref || '—'}</td>
-            <td><span class="status-badge badge-${r.payment_status}">${capitalize(r.payment_status)}</span></td>
-            <td><span class="status-badge badge-${r.status}">${capitalize(r.status)}</span></td>
+            <td><strong style="color:var(--primary);">${esc(r.category)}</strong></td>
+            <td>${esc(r.shirt_size)}</td>
+            <td style="font-size:.8rem;">${payLabels[r.payment_method] || esc(r.payment_method)}</td>
+            <td style="font-size:.78rem;font-family:monospace;">${esc(r.payment_ref) || '—'}</td>
+            <td><span class="status-badge badge-${esc(r.payment_status)}">${capitalize(esc(r.payment_status))}</span></td>
+            <td><span class="status-badge badge-${esc(r.status)}">${capitalize(esc(r.status))}</span></td>
             <td style="font-size:.73rem;white-space:nowrap;">
                 ${new Date(r.created_at).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'})}<br>
                 <span style="color:var(--muted);">${new Date(r.created_at).toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit'})}</span>
             </td>
             <td>
                 <button class="btn btn-sm btn-outline-primary me-1" style="font-size:.72rem;border-radius:6px;"
-                    onclick="openDetail('${r.reference_number}')">👁 View</button>
+                    onclick="openDetail('${esc(r.reference_number)}')">👁 View</button>
                 <button class="btn btn-sm btn-outline-warning me-1" style="font-size:.72rem;border-radius:6px;"
-                    onclick="openUpdate('${r.reference_number}')">✏️</button>
+                    onclick="openUpdate('${esc(r.reference_number)}')">✏️</button>
                 <button class="btn btn-sm btn-outline-danger" style="font-size:.72rem;border-radius:6px;"
-                    onclick="doDelete('${r.reference_number}')">🗑</button>
+                    onclick="doDelete('${esc(r.reference_number)}')">🗑</button>
             </td>
         </tr>
     `).join('');
@@ -347,6 +347,17 @@ async function renderTable() {
 }
 
 function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+
+// Sanitize user-supplied strings before injecting into innerHTML
+function esc(str) {
+    if (str == null) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
 
 // ── UPDATE MODAL ────────────────────────────────────────
 function openUpdate(ref) {
@@ -409,31 +420,31 @@ function openDetail(ref) {
             <div class="col-md-6">
                 <h6 class="fw-bold text-muted mb-2">PERSONAL INFO</h6>
                 <table class="table table-sm table-borderless" style="font-size:.87rem;">
-                    <tr><td class="fw-bold">Reference #</td><td style="font-family:monospace;">${r.reference_number}</td></tr>
-                    <tr><td class="fw-bold">Full Name</td><td>${r.first_name} ${r.last_name}</td></tr>
-                    <tr><td class="fw-bold">Email</td><td>${r.email}</td></tr>
-                    <tr><td class="fw-bold">Phone</td><td>${r.phone}</td></tr>
-                    <tr><td class="fw-bold">Birthdate</td><td>${r.birthdate}</td></tr>
-                    <tr><td class="fw-bold">Gender</td><td>${r.gender}</td></tr>
-                    <tr><td class="fw-bold">Address</td><td>${r.address}</td></tr>
+                    <tr><td class="fw-bold">Reference #</td><td style="font-family:monospace;">${esc(r.reference_number)}</td></tr>
+                    <tr><td class="fw-bold">Full Name</td><td>${esc(r.first_name)} ${esc(r.last_name)}</td></tr>
+                    <tr><td class="fw-bold">Email</td><td>${esc(r.email)}</td></tr>
+                    <tr><td class="fw-bold">Phone</td><td>${esc(r.phone)}</td></tr>
+                    <tr><td class="fw-bold">Birthdate</td><td>${esc(r.birthdate)}</td></tr>
+                    <tr><td class="fw-bold">Gender</td><td>${esc(r.gender)}</td></tr>
+                    <tr><td class="fw-bold">Address</td><td>${esc(r.address)}</td></tr>
                 </table>
             </div>
             <div class="col-md-6">
                 <h6 class="fw-bold text-muted mb-2">RACE & PAYMENT</h6>
                 <table class="table table-sm table-borderless" style="font-size:.87rem;">
-                    <tr><td class="fw-bold">Category</td><td><strong style="color:var(--primary);">${r.category} — ${cat.label || ''}</strong></td></tr>
+                    <tr><td class="fw-bold">Category</td><td><strong style="color:var(--primary);">${esc(r.category)} — ${esc(cat.label || '')}</strong></td></tr>
                     <tr><td class="fw-bold">Fee</td><td><strong>${peso(cat.fee || 0)}</strong></td></tr>
-                    <tr><td class="fw-bold">Shirt Size</td><td>${r.shirt_size}</td></tr>
-                    <tr><td class="fw-bold">Payment</td><td>${payLabels[r.payment_method] || r.payment_method}</td></tr>
-                    <tr><td class="fw-bold">Tx Ref #</td><td style="font-family:monospace;">${r.payment_ref || '—'}</td></tr>
-                    <tr><td class="fw-bold">Pay Status</td><td><span class="status-badge badge-${r.payment_status}">${capitalize(r.payment_status)}</span></td></tr>
-                    <tr><td class="fw-bold">Reg Status</td><td><span class="status-badge badge-${r.status}">${capitalize(r.status)}</span></td></tr>
+                    <tr><td class="fw-bold">Shirt Size</td><td>${esc(r.shirt_size)}</td></tr>
+                    <tr><td class="fw-bold">Payment</td><td>${payLabels[r.payment_method] || esc(r.payment_method)}</td></tr>
+                    <tr><td class="fw-bold">Tx Ref #</td><td style="font-family:monospace;">${esc(r.payment_ref) || '—'}</td></tr>
+                    <tr><td class="fw-bold">Pay Status</td><td><span class="status-badge badge-${esc(r.payment_status)}">${capitalize(esc(r.payment_status))}</span></td></tr>
+                    <tr><td class="fw-bold">Reg Status</td><td><span class="status-badge badge-${esc(r.status)}">${capitalize(esc(r.status))}</span></td></tr>
                 </table>
             </div>
             <div class="col-12">
                 <h6 class="fw-bold text-muted mb-2">EMERGENCY CONTACT</h6>
-                <p style="font-size:.87rem;">${r.emergency_contact_name} — ${r.emergency_contact_number}</p>
-                ${r.notes ? `<h6 class="fw-bold text-muted mb-1">NOTES</h6><p style="font-size:.87rem;">${r.notes}</p>` : ''}
+                <p style="font-size:.87rem;">${esc(r.emergency_contact_name)} — ${esc(r.emergency_contact_number)}</p>
+                ${r.notes ? `<h6 class="fw-bold text-muted mb-1">NOTES</h6><p style="font-size:.87rem;">${esc(r.notes)}</p>` : ''}
                 <div class="text-muted" style="font-size:.75rem;">Registered: ${fmtDate(r.created_at)}</div>
             </div>
         </div>`;
