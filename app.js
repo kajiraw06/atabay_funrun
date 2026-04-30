@@ -9,7 +9,7 @@ const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const CONFIG = {
     eventName:     'Atabay Fiesta Fun Run 2026',
     eventTagline:  '"Takbo ni Pedro Para sa Kapayapaan"',
-    eventSlogan:   'One Run · One Dream · One Peace for Everyone',
+    eventSlogan:   'One Run · One Dream · Peace for Everyone',
     eventRegEnd:   'May 24, 2026',
     eventLocation: 'Atabay Barangay Hall, Brgy. Atabay, Hilongos, Leyte',
     eventOrganizer:'Barangay Atabay, Hilongos, Leyte',

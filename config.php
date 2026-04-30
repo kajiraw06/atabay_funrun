@@ -12,7 +12,7 @@ define('DB_NAME', 'fun_run_db');
 // --- Event Info ---
 define('EVENT_NAME',     'Atabay Fiesta Fun Run 2026');
 define('EVENT_TAGLINE',  '"Takbo ni Pedro Para sa Kapayapaan"');
-define('EVENT_SLOGAN',   'One Run · One Dream · One Peace for Everyone');
+define('EVENT_SLOGAN',   'One Run · One Dream · Peace for Everyone');
 define('EVENT_DATE',     'May 2026');  // Exact race day TBA
 define('EVENT_REG_END',  'May 24, 2026');
 define('EVENT_LOCATION', 'Atabay Barangay Hall, Brgy. Atabay, Hilongos, Leyte');
