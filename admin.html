@@ -335,8 +335,10 @@ async function renderTable() {
             <td>
                 <button class="btn btn-sm btn-outline-primary me-1" style="font-size:.72rem;border-radius:6px;"
                     onclick="openDetail('${r.reference_number}')">👁 View</button>
-                <button class="btn btn-sm btn-outline-warning" style="font-size:.72rem;border-radius:6px;"
+                <button class="btn btn-sm btn-outline-warning me-1" style="font-size:.72rem;border-radius:6px;"
                     onclick="openUpdate('${r.reference_number}')">✏️</button>
+                <button class="btn btn-sm btn-outline-danger" style="font-size:.72rem;border-radius:6px;"
+                    onclick="doDelete('${r.reference_number}')">🗑</button>
             </td>
         </tr>
     `).join('');
@@ -369,6 +371,13 @@ function openUpdate(ref) {
     }
 
     updateModal.show();
+}
+
+async function doDelete(ref) {
+    if (!confirm(`Delete registration ${ref}? This cannot be undone.`)) return;
+    const { error } = await deleteReg(ref);
+    if (error) { alert('Error: ' + error.message); return; }
+    await renderAll();
 }
 
 async function saveModal() {
