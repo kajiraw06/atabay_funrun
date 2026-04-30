@@ -361,7 +361,7 @@
     const withSinglet = Object.entries(CONFIG.categories).filter(([,c]) => !c.noSinglet);
     const noSinglet   = Object.entries(CONFIG.categories).filter(([,c]) =>  c.noSinglet);
 
-    grid.innerHTML += `<div style="font-size:.75rem;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">With Singlet</div>`;
+    grid.innerHTML += `<div class="category-grid-label" style="font-size:.75rem;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">With Singlet</div>`;
     withSinglet.forEach(([key, cat]) => {
         grid.innerHTML += `
         <div class="category-card">
@@ -375,7 +375,7 @@
         </div>`;
     });
 
-    grid.innerHTML += `<div style="font-size:.75rem;font-weight:700;color:#e67e00;text-transform:uppercase;letter-spacing:.05em;margin:10px 0 4px;">No Singlet (Cheaper)</div>`;
+    grid.innerHTML += `<div class="category-grid-label" style="font-size:.75rem;font-weight:700;color:#e67e00;text-transform:uppercase;letter-spacing:.05em;margin:10px 0 4px;">No Singlet (Cheaper)</div>`;
     noSinglet.forEach(([key, cat]) => {
         grid.innerHTML += `
         <div class="category-card" style="border-color:#e67e00;">
