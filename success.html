@@ -52,7 +52,6 @@
             <table class="table table-sm mb-0" style="font-size:.9rem;">
                 <tbody>
                     <tr><td class="fw-bold" style="width:45%;">Name</td>          <td id="sName"></td></tr>
-                    <tr><td class="fw-bold">Email</td>                             <td id="sEmail"></td></tr>
                     <tr><td class="fw-bold">Phone</td>                             <td id="sPhone"></td></tr>
                     <tr><td class="fw-bold">Race Category</td>                     <td id="sCat"></td></tr>
                     <tr><td class="fw-bold">Registration Fee</td>                  <td id="sFee"></td></tr>
@@ -147,7 +146,6 @@
     document.getElementById('refNumber').textContent = reg.reference_number;
 
     document.getElementById('sName').textContent    = reg.first_name + ' ' + reg.last_name;
-    document.getElementById('sEmail').textContent   = reg.email;
     document.getElementById('sPhone').textContent   = reg.phone;
     document.getElementById('sCat').textContent     = cat.label || reg.category;
     document.getElementById('sFee').innerHTML       = '<strong style="color:var(--primary)">' + peso(cat.fee || 0) + '</strong>';

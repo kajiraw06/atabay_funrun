@@ -138,10 +138,6 @@
                     <input type="text" id="lastName" class="form-control" placeholder="Dela Cruz" maxlength="100">
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Email Address <span class="text-danger">*</span></label>
-                    <input type="email" id="email" class="form-control" placeholder="juan@email.com" maxlength="150">
-                </div>
-                <div class="col-md-6">
                     <label class="form-label">Mobile Number <span class="text-danger">*</span></label>
                     <input type="tel" id="phone" class="form-control" placeholder="09XXXXXXXXX" maxlength="15">
                 </div>
@@ -483,7 +479,6 @@ document.getElementById('regForm').addEventListener('submit', async function(e) 
 
     const firstName = document.getElementById('firstName').value.trim();
     const lastName  = document.getElementById('lastName').value.trim();
-    const email     = document.getElementById('email').value.trim();
     const phone     = document.getElementById('phone').value.trim();
     const birthdate = document.getElementById('birthdate').value;
     const gender    = document.getElementById('gender').value;
@@ -501,9 +496,6 @@ document.getElementById('regForm').addEventListener('submit', async function(e) 
 
     if (firstName.length < 2)  errors.push('First name is required (min 2 characters).');
     if (lastName.length  < 2)  errors.push('Last name is required (min 2 characters).');
-
-    const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRx.test(email))  errors.push('A valid email address is required.');
 
     const phoneRx = /^[0-9+\-\s]{10,15}$/;
     if (!phoneRx.test(phone))  errors.push('A valid mobile number is required (e.g. 09XXXXXXXXX).');
@@ -557,7 +549,7 @@ document.getElementById('regForm').addEventListener('submit', async function(e) 
         reference_number:         generateRef(),
         first_name:               firstName,
         last_name:                lastName,
-        email, phone, address, birthdate, gender,
+        phone, address, birthdate, gender,
         emergency_contact_name:   emergencyName,
         emergency_contact_number: emergencyPhone,
         category,
