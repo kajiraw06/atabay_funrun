@@ -98,6 +98,12 @@ async function checkPaymentRefExists(paymentRef) {
     return { exists: !!data, error };
 }
 
+/** Get total number of registrations. Returns { count, error } */
+async function getRegistrationCount() {
+    const { data, error } = await _supabase.rpc('get_registration_count');
+    return { count: data || 0, error };
+}
+
 /** Lookup registrations by first + last name. Returns { data, error } */
 async function getRegistrationsByName(firstName, lastName) {
     const { data, error } = await _supabase
