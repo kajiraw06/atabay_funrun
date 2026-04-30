@@ -73,7 +73,7 @@ if (!in_array($category, $valid_categories))
 
 $valid_sizes = ['XS','S','M','L','XL','XXL'];
 if (!in_array($shirt_size, $valid_sizes))
-    $errors[] = 'Please select a valid t-shirt size.';
+    $errors[] = 'Please select a valid singlet size.';
 
 $valid_payments = ['gcash','paymaya','cash'];
 if (!in_array($payment_method, $valid_payments))

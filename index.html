@@ -219,7 +219,7 @@
 
         <!-- ③ RACE CATEGORY & SHIRT SIZE -->
         <div class="form-card">
-            <div class="section-title">③ Race Category & T-Shirt Size</div>
+            <div class="section-title">③ Race Category & Singlet Size</div>
 
             <label class="form-label mb-2">Choose your category <span class="text-danger">*</span></label>
             <div class="category-grid mb-3" id="categoryGrid"></div>
@@ -229,14 +229,14 @@
             </div>
 
             <div id="shirtSizeSection">
-                <label class="form-label mb-2">T-Shirt Size <span class="text-danger">*</span></label>
+                <label class="form-label mb-2">Singlet Size <span class="text-danger">*</span></label>
                 <div class="size-grid" id="sizeGrid"></div>
                 <div class="mt-2" style="font-size:.78rem;color:var(--muted);">
                     Actual shirt will be given during race kit claiming.
                 </div>
             </div>
             <div id="noSingletNotice" style="display:none;" class="alert alert-info py-2" style="font-size:.85rem;">
-                👕 No singlet for this entry — no t-shirt size needed.
+                👕 No singlet for this entry — no singlet size needed.
             </div>
         </div>
 
@@ -540,7 +540,7 @@ document.getElementById('regForm').addEventListener('submit', async function(e) 
     if (!emergencyRelationship)          errors.push('Please select your emergency contact\'s relationship to you.');
 
     if (!category)   errors.push('Please select a race category.');
-    if (!isNoSinglet && !shirtSize) errors.push('Please select a t-shirt size.');
+    if (!isNoSinglet && !shirtSize) errors.push('Please select a singlet size.');
     if (!paymentMethod) errors.push('Please select a payment method.');
 
     if (paymentMethod === 'gcash' || paymentMethod === 'paymaya') {

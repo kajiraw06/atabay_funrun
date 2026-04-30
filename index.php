@@ -166,7 +166,7 @@ $cat_json = json_encode(array_map(fn($v) => $v['fee'], CATEGORIES));
 
         <!-- ③ RACE DETAILS -->
         <div class="form-card">
-            <div class="section-title">③ Race Category & T-Shirt Size</div>
+            <div class="section-title">③ Race Category & Singlet Size</div>
 
             <label class="form-label mb-2">Choose your category <span class="text-danger">*</span></label>
             <div class="category-grid mb-3">
@@ -190,7 +190,7 @@ $cat_json = json_encode(array_map(fn($v) => $v['fee'], CATEGORIES));
                 Registration fee: <strong id="fee_amount" class="text-danger"></strong>
             </div>
 
-            <label class="form-label mb-2">T-Shirt Size <span class="text-danger">*</span></label>
+            <label class="form-label mb-2">Singlet Size <span class="text-danger">*</span></label>
             <div class="size-grid">
                 <?php foreach (['XS','S','M','L','XL','XXL'] as $sz): ?>
                 <div class="size-option">

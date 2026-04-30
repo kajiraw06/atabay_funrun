@@ -59,7 +59,7 @@ $is_online = in_array($d['payment_method'], ['gcash','paymaya']);
                     <td><?= htmlspecialchars($d['category']) ?></td></tr>
                 <tr><td class="fw-bold">Registration Fee</td>
                     <td><strong style="color:var(--primary)">₱<?= number_format($d['fee']) ?></strong></td></tr>
-                <tr><td class="fw-bold">T-Shirt Size</td>
+                <tr><td class="fw-bold">Singlet Size</td>
                     <td><?= htmlspecialchars($d['shirt_size']) ?></td></tr>
                 <tr><td class="fw-bold">Payment Method</td>
                     <td><?= htmlspecialchars($pay_label[$d['payment_method']]) ?></td></tr>
