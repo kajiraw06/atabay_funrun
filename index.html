@@ -297,6 +297,8 @@
             <input type="text" name="website" id="hp_website" tabindex="-1" autocomplete="off"
                 style="display:none!important;position:absolute;left:-9999px;width:1px;height:1px;"
                 aria-hidden="true">
+            <!-- Cloudflare Turnstile CAPTCHA -->
+            <div class="cf-turnstile mb-3" data-sitekey="0x4AAAAAADG5UXDl6o5mGwj5" data-theme="light"></div>
             <button type="submit" class="btn-register" id="submitBtn">
                 🏃 SUBMIT REGISTRATION
             </button>
@@ -324,6 +326,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script src="app.js"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script>
 // ── Build prizes podium ─────────────────────────────────
 (function() {
@@ -430,6 +433,17 @@ document.getElementById('regForm').addEventListener('submit', async function(e) 
 
     // Honeypot: silently reject bots that fill hidden fields
     if (document.getElementById('hp_website').value) return;
+
+    // Cloudflare Turnstile: require a valid token
+    const turnstileToken = document.querySelector('[name="cf-turnstile-response"]')?.value;
+    if (!turnstileToken) {
+        const errorBox  = document.getElementById('errorBox');
+        const errorList = document.getElementById('errorList');
+        errorList.innerHTML = '<li>Please complete the security check before submitting.</li>';
+        errorBox.style.display = 'block';
+        errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
 
     const errors = [];
 
