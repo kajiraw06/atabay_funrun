@@ -235,10 +235,6 @@
                     <input type="radio" name="paymentMethod" id="pm_paymaya" value="paymaya">
                     <label for="pm_paymaya"><span class="pay-icon">💙</span> PayMaya / Maya</label>
                 </div>
-                <div class="pay-option">
-                    <input type="radio" name="paymentMethod" id="pm_cash" value="cash">
-                    <label for="pm_cash"><span class="pay-icon">💵</span> Cash (Walk-in)</label>
-                </div>
             </div>
 
             <!-- GCash instructions -->
@@ -263,15 +259,6 @@
                     <li>Note your <strong>Maya Reference Number</strong> from the receipt.</li>
                     <li>Enter that reference number in the field below.</li>
                 </ol>
-            </div>
-
-            <!-- Cash instructions -->
-            <div id="box_cash" class="payment-box cash-box">
-                <h6>💵 Cash Walk-in Instructions</h6>
-                <p style="font-size:.9rem;margin:0;">
-                    Pay your registration fee in cash on the day of kit claiming or during the event.
-                    Bring a copy of your confirmation (reference number) when you pay.
-                </p>
             </div>
 
             <!-- Reference number field (GCash / PayMaya) -->
@@ -435,7 +422,7 @@ document.getElementById('mayaNm').textContent   = CONFIG.paymayaName;
 // ── Payment method toggle ───────────────────────────────
 document.querySelectorAll('input[name="paymentMethod"]').forEach(r => {
     r.addEventListener('change', () => {
-        ['gcash','paymaya','cash'].forEach(m => document.getElementById('box_'+m).classList.remove('active'));
+        ['gcash','paymaya'].forEach(m => document.getElementById('box_'+m).classList.remove('active'));
         document.getElementById('box_'+r.value).classList.add('active');
         const needRef = (r.value === 'gcash' || r.value === 'paymaya');
         document.getElementById('refSection').style.display = needRef ? 'block' : 'none';
@@ -577,7 +564,7 @@ document.getElementById('regForm').addEventListener('submit', async function(e) 
         shirt_size:               shirtSize,
         payment_method:           paymentMethod,
         payment_ref:              paymentRef || null,
-        payment_status:           paymentMethod === 'cash' ? 'verified' : 'pending',
+        payment_status:           'pending',
         status:                   'pending',
     };
 
