@@ -317,8 +317,6 @@
             <input type="text" name="website" id="hp_website" tabindex="-1" autocomplete="off"
                 style="display:none!important;position:absolute;left:-9999px;width:1px;height:1px;"
                 aria-hidden="true">
-            <!-- Cloudflare Turnstile CAPTCHA -->
-            <div class="cf-turnstile mb-3" data-sitekey="0x4AAAAAADG5UXDl6o5mGwj5" data-theme="light"></div>
             <button type="submit" class="btn-register" id="submitBtn">
                 🏃 SUBMIT REGISTRATION
             </button>
@@ -346,7 +344,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script src="app.js"></script>
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script>
 // ── Build prizes podium ─────────────────────────────────
 (function() {
@@ -446,11 +443,27 @@ document.querySelectorAll('input[name="paymentMethod"]').forEach(r => {
     });
 });
 
+// ── Birthdate constraints ─────────────────────────────────
+(function() {
+    const bd = document.getElementById('birthdate');
+    bd.max = new Date().toISOString().split('T')[0];
+    bd.min = '1900-01-01';
+})();
+
 // ── Age calculator ──────────────────────────────────────
 document.getElementById('birthdate').addEventListener('change', function() {
-    if (!this.value) return;
-    const age = Math.floor((Date.now() - new Date(this.value)) / (365.25*24*60*60*1000));
-    document.getElementById('ageDisplay').value = age + ' years old';
+    const display = document.getElementById('ageDisplay');
+    if (!this.value) { display.value = ''; return; }
+    const today = new Date();
+    const birth = new Date(this.value + 'T00:00:00');
+    const age = Math.floor((today - birth) / (365.25 * 24 * 60 * 60 * 1000));
+    if (age < 0 || age > 120) {
+        display.value = 'Invalid date';
+        display.style.color = '#c0392b';
+    } else {
+        display.value = age + ' years old';
+        display.style.color = '';
+    }
 });
 
 // ── GCash/Maya ref# real-time validation ──
@@ -478,17 +491,6 @@ document.getElementById('regForm').addEventListener('submit', async function(e) 
 
     // Honeypot: silently reject bots that fill hidden fields
     if (document.getElementById('hp_website').value) return;
-
-    // Cloudflare Turnstile: require a valid token
-    const turnstileToken = document.querySelector('[name="cf-turnstile-response"]')?.value;
-    if (!turnstileToken) {
-        const errorBox  = document.getElementById('errorBox');
-        const errorList = document.getElementById('errorList');
-        errorList.innerHTML = '<li>Please complete the security check before submitting.</li>';
-        errorBox.style.display = 'block';
-        errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return;
-    }
 
     const errors = [];
 
@@ -521,8 +523,14 @@ document.getElementById('regForm').addEventListener('submit', async function(e) 
 
     if (!birthdate) {
         errors.push('Birthdate is required.');
-    } else if (new Date(birthdate) >= new Date()) {
-        errors.push('Birthdate must be in the past.');
+    } else {
+        const birthYear = new Date(birthdate + 'T00:00:00').getFullYear();
+        const age = Math.floor((Date.now() - new Date(birthdate + 'T00:00:00')) / (365.25 * 24 * 60 * 60 * 1000));
+        if (age < 0) {
+            errors.push('Birthdate must be in the past.');
+        } else if (age > 120 || birthYear < 1900) {
+            errors.push('Please enter a valid birthdate (year must be between 1900 and today).');
+        }
     }
     if (!gender)  errors.push('Please select your gender.');
     if (address.length < 10) errors.push('Please provide your complete address.');
