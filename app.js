@@ -98,6 +98,13 @@ async function checkPaymentRefExists(paymentRef) {
     return { exists: !!data, error };
 }
 
+/** Lookup registrations by first + last name. Returns { data, error } */
+async function getRegistrationsByName(firstName, lastName) {
+    const { data, error } = await _supabase
+        .rpc('get_registrations_by_name', { p_first: firstName, p_last: lastName });
+    return { data: data || [], error };
+}
+
 /** Fetch a single registration by reference number via secure RPC. Returns { data, error } */
 async function getRegistrationByRef(ref) {
     const { data, error } = await _supabase
