@@ -196,10 +196,15 @@
                 Registration fee: <strong id="feeAmount" style="color:var(--primary);font-size:1rem;"></strong>
             </div>
 
-            <label class="form-label mb-2">T-Shirt Size <span class="text-danger">*</span></label>
-            <div class="size-grid" id="sizeGrid"></div>
-            <div class="mt-2" style="font-size:.78rem;color:var(--muted);">
-                Actual shirt will be given during race kit claiming.
+            <div id="shirtSizeSection">
+                <label class="form-label mb-2">T-Shirt Size <span class="text-danger">*</span></label>
+                <div class="size-grid" id="sizeGrid"></div>
+                <div class="mt-2" style="font-size:.78rem;color:var(--muted);">
+                    Actual shirt will be given during race kit claiming.
+                </div>
+            </div>
+            <div id="noSingletNotice" style="display:none;" class="alert alert-info py-2" style="font-size:.85rem;">
+                👕 No singlet for this entry — no t-shirt size needed.
             </div>
         </div>
 
@@ -352,7 +357,12 @@
 // ── Build category cards ────────────────────────────────
 (function() {
     const grid = document.getElementById('categoryGrid');
-    Object.entries(CONFIG.categories).forEach(([key, cat]) => {
+    // Render with-singlet first, then no-singlet
+    const withSinglet = Object.entries(CONFIG.categories).filter(([,c]) => !c.noSinglet);
+    const noSinglet   = Object.entries(CONFIG.categories).filter(([,c]) =>  c.noSinglet);
+
+    grid.innerHTML += `<div style="font-size:.75rem;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">With Singlet</div>`;
+    withSinglet.forEach(([key, cat]) => {
         grid.innerHTML += `
         <div class="category-card">
             <input type="radio" name="category" id="cat_${key}" value="${key}">
@@ -364,10 +374,30 @@
             </label>
         </div>`;
     });
+
+    grid.innerHTML += `<div style="font-size:.75rem;font-weight:700;color:#e67e00;text-transform:uppercase;letter-spacing:.05em;margin:10px 0 4px;">No Singlet (Cheaper)</div>`;
+    noSinglet.forEach(([key, cat]) => {
+        grid.innerHTML += `
+        <div class="category-card" style="border-color:#e67e00;">
+            <input type="radio" name="category" id="cat_${key}" value="${key}">
+            <label for="cat_${key}">
+                <span class="distance" style="font-size:1rem;">${key.replace('-NS','')}</span>
+                <span class="cat-name">${cat.label}</span>
+                <span class="fee" style="color:#e67e00;">${peso(cat.fee)}</span>
+                <span style="font-size:.68rem;color:var(--muted);margin-top:4px;line-height:1.4;">${cat.includes}</span>
+            </label>
+        </div>`;
+    });
+
     document.querySelectorAll('input[name="category"]').forEach(r => {
         r.addEventListener('change', () => {
-            document.getElementById('feeAmount').textContent = peso(CONFIG.categories[r.value].fee);
+            const cat = CONFIG.categories[r.value];
+            document.getElementById('feeAmount').textContent = peso(cat.fee);
             document.getElementById('feeNotice').style.display = 'block';
+            // Show/hide shirt size section
+            const isNS = cat.noSinglet;
+            document.getElementById('shirtSizeSection').style.display  = isNS ? 'none' : '';
+            document.getElementById('noSingletNotice').style.display    = isNS ? '' : 'none';
         });
     });
 })();
@@ -458,7 +488,8 @@ document.getElementById('regForm').addEventListener('submit', async function(e) 
     const emergencyPhone        = document.getElementById('emergencyPhone').value.trim();
     const emergencyRelationship = document.getElementById('emergencyRelationship').value;
     const category  = document.querySelector('input[name="category"]:checked')?.value || '';
-    const shirtSize = document.querySelector('input[name="shirtSize"]:checked')?.value || '';
+    const isNoSinglet = category && CONFIG.categories[category]?.noSinglet;
+    const shirtSize = isNoSinglet ? 'N/A' : (document.querySelector('input[name="shirtSize"]:checked')?.value || '');
     const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value || '';
     const paymentRef = document.getElementById('paymentRef').value.trim();
     const healthOk  = document.getElementById('healthDeclaration').checked;
@@ -486,7 +517,7 @@ document.getElementById('regForm').addEventListener('submit', async function(e) 
     if (!emergencyRelationship)          errors.push('Please select your emergency contact\'s relationship to you.');
 
     if (!category)   errors.push('Please select a race category.');
-    if (!shirtSize)  errors.push('Please select a t-shirt size.');
+    if (!isNoSinglet && !shirtSize) errors.push('Please select a t-shirt size.');
     if (!paymentMethod) errors.push('Please select a payment method.');
 
     if (paymentMethod === 'gcash' || paymentMethod === 'paymaya') {
