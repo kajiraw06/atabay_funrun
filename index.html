@@ -85,6 +85,23 @@
         🔥 Registration closes <strong>May 24, 2026</strong> — <span id="daysLeftText"></span>Secure your slot now!
     </div>
 
+    <!-- ── CHECK REGISTRATION STATUS ─────────────────── -->
+    <div class="form-card mb-4" style="border-left:4px solid var(--teal);">
+        <div class="section-title" style="color:var(--teal);border-color:var(--teal);">🔍 Check Registration Status</div>
+        <p style="font-size:.88rem;color:var(--muted);margin-bottom:12px;">
+            Already registered? Enter your reference number to view your registration and payment status.
+        </p>
+        <div class="d-flex gap-2">
+            <input type="text" id="lookupRef" class="form-control" placeholder="e.g. FR2026-ABCDE"
+                style="font-family:monospace;letter-spacing:1px;text-transform:uppercase;"
+                maxlength="12" oninput="this.value=this.value.toUpperCase()">
+            <button onclick="lookupRegistration()" class="btn btn-primary" style="white-space:nowrap;border-radius:10px;padding:8px 20px;">
+                Check →
+            </button>
+        </div>
+        <div id="lookupError" style="display:none;color:#c0392b;font-size:.85rem;margin-top:8px;"></div>
+    </div>
+
     <!-- ── CASH PRIZES ─────────────────────────────── -->
     <div class="form-card mb-4" style="background:linear-gradient(135deg,#071A07,#0B3A0B);color:#fff;border:2px solid var(--accent);">
         <div class="section-title" style="color:var(--accent);border-color:var(--accent);">🏆 Cash Prizes</div>
@@ -615,6 +632,23 @@ document.getElementById('regForm').addEventListener('submit', async function(e) 
 
     // Redirect to success page
     window.location.href = 'success.html?ref=' + encodeURIComponent(reg.reference_number);
+});
+
+// ── Lookup registration by ref# ────────────────────────
+async function lookupRegistration() {
+    const input = document.getElementById('lookupRef');
+    const errEl = document.getElementById('lookupError');
+    const ref   = input.value.trim().toUpperCase();
+    errEl.style.display = 'none';
+    if (!ref || ref.length < 5) {
+        errEl.textContent = 'Please enter your reference number (e.g. FR2026-ABCDE).';
+        errEl.style.display = 'block';
+        return;
+    }
+    window.location.href = 'success.html?ref=' + encodeURIComponent(ref);
+}
+document.getElementById('lookupRef').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') lookupRegistration();
 });
 
 // ── Registration countdown timer ────────────────────────
