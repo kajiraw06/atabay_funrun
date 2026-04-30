@@ -81,14 +81,12 @@ async function saveRegistration(regData) {
     return { data, error };
 }
 
-/** Fetch a single registration by reference number. Returns { data, error } */
+/** Fetch a single registration by reference number via secure RPC. Returns { data, error } */
 async function getRegistrationByRef(ref) {
     const { data, error } = await _supabase
-        .from('registrations')
-        .select('*')
-        .eq('reference_number', ref)
-        .single();
-    return { data, error };
+        .rpc('get_registration_by_ref', { p_ref: ref });
+    // RPC returns array (SETOF) — unwrap to single object to keep same interface
+    return { data: (data && data.length > 0) ? data[0] : null, error };
 }
 
 /**
