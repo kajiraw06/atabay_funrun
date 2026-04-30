@@ -127,7 +127,7 @@ async function getRegistrations(filters = {}) {
     if (filters.search) {
         const s = filters.search;
         query = query.or(
-            `reference_number.ilike.%${s}%,first_name.ilike.%${s}%,last_name.ilike.%${s}%,email.ilike.%${s}%,phone.ilike.%${s}%`
+            `reference_number.ilike.%${s}%,first_name.ilike.%${s}%,last_name.ilike.%${s}%,phone.ilike.%${s}%`
         );
     }
 
