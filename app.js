@@ -91,6 +91,13 @@ async function saveRegistration(regData) {
     return { data: regData, error };
 }
 
+/** Check if a payment ref# is already used. Returns { exists, error } */
+async function checkPaymentRefExists(paymentRef) {
+    const { data, error } = await _supabase
+        .rpc('check_payment_ref_exists', { p_ref: paymentRef });
+    return { exists: !!data, error };
+}
+
 /** Fetch a single registration by reference number via secure RPC. Returns { data, error } */
 async function getRegistrationByRef(ref) {
     const { data, error } = await _supabase

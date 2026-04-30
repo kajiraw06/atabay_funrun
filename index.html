@@ -565,6 +565,27 @@ document.getElementById('regForm').addEventListener('submit', async function(e) 
     btn.disabled = true;
     btn.textContent = '⏳ Submitting…';
 
+    // Check for duplicate GCash/Maya payment ref#
+    if (paymentRef) {
+        const { exists, error: chkErr } = await checkPaymentRefExists(paymentRef);
+        if (chkErr) {
+            btn.disabled = false;
+            btn.textContent = '🏃 SUBMIT REGISTRATION';
+            errorList.innerHTML = `<li>Could not verify payment reference. Please try again.</li>`;
+            errorBox.style.display = 'block';
+            errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+        if (exists) {
+            btn.disabled = false;
+            btn.textContent = '🏃 SUBMIT REGISTRATION';
+            errorList.innerHTML = `<li>This GCash/Maya reference number has already been used. Please check your receipt and enter the correct number.</li>`;
+            errorBox.style.display = 'block';
+            errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+    }
+
     // Retry up to 5 times in case of reference number collision
     let saveError = null;
     for (let attempt = 0; attempt < 5; attempt++) {
