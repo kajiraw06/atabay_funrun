@@ -22,6 +22,8 @@ const CONFIG = {
     onlineCoord:   'Raul Urgel',
     gcashNumber:   '+63946-713-7308',
     gcashName:     'Raul Urgel',
+    gcashNumber2:  '09208872740',
+    gcashName2:    'Welinchona Oliva',
     paymayaNumber: '+63946-713-7308',
     paymayaName:   'Raul Urgel',
 

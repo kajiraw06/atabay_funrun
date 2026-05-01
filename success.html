@@ -173,7 +173,7 @@
         const rem = document.getElementById('payReminder');
         rem.style.display = 'block';
         const coord = reg.payment_method === 'gcash'
-            ? CONFIG.gcashNumber + ' (' + CONFIG.gcashName + ')'
+            ? CONFIG.gcashNumber + ' (' + CONFIG.gcashName + ') or ' + CONFIG.gcashNumber2 + ' (' + CONFIG.gcashName2 + ')'
             : CONFIG.paymayaNumber + ' (' + CONFIG.paymayaName + ')';
         document.getElementById('payReminderText').innerHTML =
             `Send <strong>${peso(cat.fee || 0)}</strong> to: 📱 <strong style="color:var(--primary);font-size:1rem;">${coord}</strong>`;

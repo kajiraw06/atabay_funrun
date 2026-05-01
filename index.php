@@ -240,6 +240,8 @@ $cat_json = json_encode(array_map(fn($v) => $v['fee'], CATEGORIES));
                     <li>Open your <strong>GCash</strong> app and tap <em>Send Money</em>.</li>
                     <li>Enter the number: <span class="acct"><?= htmlspecialchars(GCASH_NUMBER) ?></span></li>
                     <li>Account name: <strong><?= htmlspecialchars(GCASH_NAME) ?></strong></li>
+                    <li><em>or</em> Enter the number: <span class="acct"><?= htmlspecialchars(GCASH_NUMBER_2) ?></span></li>
+                    <li>Account name: <strong><?= htmlspecialchars(GCASH_NAME_2) ?></strong></li>
                     <li>Enter the exact registration fee as the amount.</li>
                     <li>Save or screenshot your transaction receipt.</li>
                     <li>Upload the screenshot below.</li>

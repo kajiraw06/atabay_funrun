@@ -40,6 +40,10 @@ define('CASH_PRIZES', [
 define('GCASH_NUMBER',    '+63946-713-7308');
 define('GCASH_NAME',      'Raul Urgel');
 
+// Online Registration GCash 2 (Welinchona Oliva)
+define('GCASH_NUMBER_2',  '09208872740');
+define('GCASH_NAME_2',    'Welinchona Oliva');
+
 // PayMaya — same coordinator
 define('PAYMAYA_NUMBER',  '+63946-713-7308');
 define('PAYMAYA_NAME',    'Raul Urgel');

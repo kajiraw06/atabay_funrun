@@ -264,6 +264,7 @@
                 <ol style="font-size:.9rem;margin:0;padding-left:18px;line-height:2;">
                     <li>Open your <strong>GCash</strong> app → tap <em>Send Money</em>.</li>
                     <li>Number: <span class="acct" id="gcashNum"></span> — <strong id="gcashNm"></strong></li>
+                    <li><em>or</em> Number: <span class="acct" id="gcashNum2"></span> — <strong id="gcashNm2"></strong></li>
                     <li>Enter the exact registration fee as the amount.</li>
                     <li>Note your <strong>GCash Reference Number</strong> from the receipt.</li>
                     <li>Enter that reference number in the field below.</li>
@@ -435,8 +436,10 @@
 })();
 
 // ── Set payment account details ─────────────────────────
-document.getElementById('gcashNum').textContent = CONFIG.gcashNumber;
-document.getElementById('gcashNm').textContent  = CONFIG.gcashName;
+document.getElementById('gcashNum').textContent  = CONFIG.gcashNumber;
+document.getElementById('gcashNm').textContent   = CONFIG.gcashName;
+document.getElementById('gcashNum2').textContent = CONFIG.gcashNumber2;
+document.getElementById('gcashNm2').textContent  = CONFIG.gcashName2;
 document.getElementById('mayaNum').textContent  = CONFIG.paymayaNumber;
 document.getElementById('mayaNm').textContent   = CONFIG.paymayaName;
 

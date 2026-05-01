@@ -105,7 +105,9 @@ $is_online = in_array($d['payment_method'], ['gcash','paymaya']);
             If you haven't sent your GCash payment yet, please send
             <strong>₱<?= number_format($d['fee']) ?></strong> to:<br>
             📱 <span style="font-size:1rem;font-weight:700;color:var(--primary)"><?= htmlspecialchars(GCASH_NUMBER) ?></span>
-            — <strong><?= htmlspecialchars(GCASH_NAME) ?></strong>
+            — <strong><?= htmlspecialchars(GCASH_NAME) ?></strong><br>
+            📱 <span style="font-size:1rem;font-weight:700;color:var(--primary)"><?= htmlspecialchars(GCASH_NUMBER_2) ?></span>
+            — <strong><?= htmlspecialchars(GCASH_NAME_2) ?></strong>
         </p>
         <?php else: ?>
         <p style="font-size:.9rem;margin:0;">
@@ -135,7 +137,7 @@ $is_online = in_array($d['payment_method'], ['gcash','paymaya']);
 <div style="background:var(--dark);color:rgba(255,255,255,.6);text-align:center;padding:18px;font-size:.82rem;line-height:2;">
     <?= htmlspecialchars(EVENT_NAME) ?> &copy; <?= date('Y') ?><br>
     Onsite: <?= htmlspecialchars(EVENT_CONTACT_NAME) ?> — <?= htmlspecialchars(EVENT_CONTACT) ?> &nbsp;|&nbsp;
-    Online Coordinator: <?= htmlspecialchars(EVENT_ONLINE_COORD) ?> — <?= htmlspecialchars(GCASH_NUMBER) ?>
+    Online Coordinator: <?= htmlspecialchars(EVENT_ONLINE_COORD) ?> — <?= htmlspecialchars(GCASH_NUMBER) ?> / <?= htmlspecialchars(GCASH_NUMBER_2) ?>
 </div>
 
 </body>
