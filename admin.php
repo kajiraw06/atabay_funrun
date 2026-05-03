@@ -70,6 +70,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_id'])) {
     $message = 'Registration #' . $upd_id . ' updated successfully.';
 }
 
+// Manual add registrant (onsite)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['manual_add'])) {
+    function aclean(string $v): string {
+        return htmlspecialchars(trim($v), ENT_QUOTES, 'UTF-8');
+    }
+    $m_first    = aclean($_POST['m_first_name']               ?? '');
+    $m_last     = aclean($_POST['m_last_name']                ?? '');
+    $m_email    = filter_var(trim($_POST['m_email'] ?? ''), FILTER_SANITIZE_EMAIL);
+    $m_phone    = aclean($_POST['m_phone']                    ?? '');
+    $m_address  = aclean($_POST['m_address']                  ?? '');
+    $m_bdate    = aclean($_POST['m_birthdate']                ?? '');
+    $m_gender   = aclean($_POST['m_gender']                   ?? '');
+    $m_ec_name  = aclean($_POST['m_emergency_contact_name']   ?? '');
+    $m_ec_num   = aclean($_POST['m_emergency_contact_number'] ?? '');
+    $m_cat      = aclean($_POST['m_category']                 ?? '');
+    $m_size     = aclean($_POST['m_shirt_size']               ?? '');
+    $m_pay      = aclean($_POST['m_payment_method']           ?? '');
+    $m_ref      = aclean($_POST['m_payment_ref']              ?? '');
+    $m_pstatus  = in_array($_POST['m_payment_status'] ?? '', ['pending','verified','rejected'])
+                  ? $_POST['m_payment_status'] : 'verified';
+    $m_rstatus  = in_array($_POST['m_registration_status'] ?? '', ['pending','confirmed','cancelled'])
+                  ? $_POST['m_registration_status'] : 'confirmed';
+    $m_notes    = substr(aclean($_POST['m_notes'] ?? ''), 0, 500);
+
+    $add_errors = [];
+    if (strlen($m_first) < 2) $add_errors[] = 'First name required.';
+    if (strlen($m_last)  < 2) $add_errors[] = 'Last name required.';
+    if (empty($m_phone))      $add_errors[] = 'Phone required.';
+    if (empty($m_address))    $add_errors[] = 'Address required.';
+    if (empty($m_bdate) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $m_bdate)) $add_errors[] = 'Valid birthdate required.';
+    if (!in_array($m_gender, ['Male','Female','Other']))                     $add_errors[] = 'Gender required.';
+    if (strlen($m_ec_name) < 2) $add_errors[] = 'Emergency contact name required.';
+    if (empty($m_ec_num))       $add_errors[] = 'Emergency contact number required.';
+    if (!array_key_exists($m_cat, CATEGORIES))                              $add_errors[] = 'Valid category required.';
+    if (!in_array($m_size, ['XS','S','M','L','XL','XXL']))                  $add_errors[] = 'Valid shirt size required.';
+    if (!in_array($m_pay, ['gcash','paymaya','cash']))                       $add_errors[] = 'Valid payment method required.';
+
+    if (empty($add_errors)) {
+        // Generate unique reference number
+        do {
+            $m_refnum = 'FR' . date('Y') . '-' . strtoupper(substr(bin2hex(random_bytes(3)), 0, 5));
+            $chk = $conn->prepare('SELECT id FROM registrations WHERE reference_number = ?');
+            $chk->bind_param('s', $m_refnum);
+            $chk->execute();
+            $chk->store_result();
+            $exists = $chk->num_rows > 0;
+            $chk->close();
+        } while ($exists);
+
+        $ins = $conn->prepare(
+            'INSERT INTO registrations
+                (reference_number, first_name, last_name, email, phone, address,
+                 birthdate, gender, emergency_contact_name, emergency_contact_number,
+                 category, shirt_size, payment_method, payment_ref, payment_proof,
+                 payment_status, registration_status, notes)
+             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,NULL,?,?,?)'
+        );
+        $ins->bind_param(
+            'sssssssssssssssss',
+            $m_refnum, $m_first, $m_last, $m_email, $m_phone, $m_address,
+            $m_bdate, $m_gender, $m_ec_name, $m_ec_num,
+            $m_cat, $m_size, $m_pay, $m_ref,
+            $m_pstatus, $m_rstatus, $m_notes
+        );
+        $ins->execute();
+        $ins->close();
+        $message = 'Onsite registrant ' . htmlspecialchars($m_first . ' ' . $m_last) . ' added successfully. Ref: ' . $m_refnum;
+    } else {
+        $message = '⚠️ ' . implode(' | ', $add_errors);
+    }
+}
+
 // ── FILTERS ──────────────────────────────────────────────────────
 $filter_status  = $_GET['status']   ?? '';
 $filter_cat     = $_GET['cat']      ?? '';
@@ -176,6 +248,9 @@ $result = $stmt->get_result();
             <a href="index.php" target="_blank" class="btn btn-sm btn-outline-secondary" style="border-radius:8px;">
                 🌐 View Registration Page
             </a>
+            <button class="btn btn-sm btn-success ms-2" style="border-radius:8px;" onclick="openAddModal()">
+                ➕ Add Onsite Registrant
+            </button>
         </div>
 
         <?php if ($message): ?>
@@ -317,6 +392,121 @@ $result = $stmt->get_result();
     </div><!-- /main -->
 </div><!-- /flex -->
 
+<!-- ── ADD ONSITE REGISTRANT MODAL ───────────── -->
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="border-radius:14px;">
+            <form method="POST">
+            <input type="hidden" name="manual_add" value="1">
+            <div class="modal-header" style="background:var(--primary);color:#fff;border-radius:14px 14px 0 0;">
+                <h5 class="modal-title fw-bold">➕ Add Onsite Registrant</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">First Name <span class="text-danger">*</span></label>
+                        <input type="text" name="m_first_name" class="form-control" required maxlength="100">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Last Name <span class="text-danger">*</span></label>
+                        <input type="text" name="m_last_name" class="form-control" required maxlength="100">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Phone <span class="text-danger">*</span></label>
+                        <input type="text" name="m_phone" class="form-control" required maxlength="20" placeholder="09XXXXXXXXX">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Email</label>
+                        <input type="email" name="m_email" class="form-control" maxlength="150" placeholder="(optional)">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Address <span class="text-danger">*</span></label>
+                        <input type="text" name="m_address" class="form-control" required maxlength="255">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Birthdate <span class="text-danger">*</span></label>
+                        <input type="date" name="m_birthdate" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Gender <span class="text-danger">*</span></label>
+                        <select name="m_gender" class="form-select" required>
+                            <option value="">— Select —</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Emergency Contact Name <span class="text-danger">*</span></label>
+                        <input type="text" name="m_emergency_contact_name" class="form-control" required maxlength="150">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Emergency Contact Number <span class="text-danger">*</span></label>
+                        <input type="text" name="m_emergency_contact_number" class="form-control" required maxlength="20">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Category <span class="text-danger">*</span></label>
+                        <select name="m_category" class="form-select" required>
+                            <option value="">— Select —</option>
+                            <?php foreach (CATEGORIES as $k => $c): ?>
+                            <option value="<?= $k ?>"><?= $k ?> — ₱<?= number_format($c['fee']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Shirt Size <span class="text-danger">*</span></label>
+                        <select name="m_shirt_size" class="form-select" required>
+                            <option value="">— Select —</option>
+                            <?php foreach (['XS','S','M','L','XL','XXL'] as $sz): ?>
+                            <option><?= $sz ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Payment Method <span class="text-danger">*</span></label>
+                        <select name="m_payment_method" class="form-select" required>
+                            <option value="">— Select —</option>
+                            <option value="cash">Cash</option>
+                            <option value="gcash">GCash</option>
+                            <option value="paymaya">PayMaya / Maya</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">GCash/Maya Ref # <small class="text-muted">(if applicable)</small></label>
+                        <input type="text" name="m_payment_ref" class="form-control" maxlength="40" placeholder="e.g. 1234567890123">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Payment Status</label>
+                        <select name="m_payment_status" class="form-select">
+                            <option value="verified">Verified ✅</option>
+                            <option value="pending">Pending</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Registration Status</label>
+                        <select name="m_registration_status" class="form-select">
+                            <option value="confirmed">Confirmed ✅</option>
+                            <option value="pending">Pending</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Notes <small class="text-muted">(optional)</small></label>
+                        <textarea name="m_notes" class="form-control" rows="2" placeholder="e.g. Paid onsite during kit claiming"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-success">➕ Add Registrant</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- ── UPDATE MODAL ───────────────────────────── -->
 <div class="modal fade" id="updateModal" tabindex="-1">
     <div class="modal-dialog">
@@ -371,6 +561,11 @@ function openModal(id, payStatus, regStatus, notes, name) {
     document.getElementById('modal_reg_status').value = regStatus;
     document.getElementById('modal_notes').value = notes;
     modal.show();
+}
+
+const addModal = new bootstrap.Modal(document.getElementById('addModal'));
+function openAddModal() {
+    addModal.show();
 }
 </script>
 </body>
