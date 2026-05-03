@@ -30,6 +30,7 @@ $emergency_contact_number = clean($_POST['emergency_contact_number'] ?? '');
 $category                 = clean($_POST['category']                 ?? '');
 $shirt_size               = clean($_POST['shirt_size']               ?? '');
 $payment_method           = clean($_POST['payment_method']           ?? '');
+$payment_ref              = clean($_POST['payment_ref']              ?? '');
 $agree_terms              = isset($_POST['agree_terms']) ? 1 : 0;
 
 // ── VALIDATION ──────────────────────────────────────────────────
@@ -81,8 +82,14 @@ if (!in_array($payment_method, $valid_payments))
 
 if (!$agree_terms)
     $errors[] = 'You must agree to the terms and conditions.';
-
-// ── FILE UPLOAD VALIDATION ──────────────────────────────────────
+// Payment reference number validation (required for GCash/PayMaya)
+if (in_array($payment_method, ['gcash', 'paymaya'])) {
+    if (empty($payment_ref)) {
+        $errors[] = 'Payment reference number is required for GCash/PayMaya.';
+    } elseif (!preg_match('/^[A-Za-z0-9\-\s]{6,40}$/', $payment_ref)) {
+        $errors[] = 'Payment reference number must be 6–40 characters (letters, numbers, hyphens only).';
+    }
+} ──────────────────────────────────────
 $proof_filename = null;
 
 if (in_array($payment_method, ['gcash', 'paymaya'])) {
@@ -139,6 +146,7 @@ if (!empty($errors)) {
         'category'                 => $category,
         'shirt_size'               => $shirt_size,
         'payment_method'           => $payment_method,
+        'payment_ref'              => $payment_ref,
     ];
     header('Location: index.php');
     exit;
@@ -161,20 +169,20 @@ $stmt = $conn->prepare(
     'INSERT INTO registrations
         (reference_number, first_name, last_name, email, phone, address,
          birthdate, gender, emergency_contact_name, emergency_contact_number,
-         category, shirt_size, payment_method, payment_proof, payment_status)
-     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+         category, shirt_size, payment_method, payment_ref, payment_proof, payment_status)
+     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 );
 
 $pay_status = ($payment_method === 'cash') ? 'verified' : 'pending';
 
 $stmt->bind_param(
-    'sssssssssssssss',
+    'ssssssssssssssss',
     $ref_num,
     $first_name, $last_name, $email, $phone, $address,
     $birthdate, $gender,
     $emergency_contact_name, $emergency_contact_number,
     $category, $shirt_size,
-    $payment_method, $proof_filename, $pay_status
+    $payment_method, $payment_ref, $proof_filename, $pay_status
 );
 
 if (!$stmt->execute()) {

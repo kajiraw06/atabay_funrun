@@ -243,9 +243,12 @@ $cat_json = json_encode(array_map(fn($v) => $v['fee'], CATEGORIES));
                     <li><em>or</em> Enter the number: <span class="acct"><?= htmlspecialchars(GCASH_NUMBER_2) ?></span></li>
                     <li>Account name: <strong><?= htmlspecialchars(GCASH_NAME_2) ?></strong></li>
                     <li>Enter the exact registration fee as the amount.</li>
-                    <li>Save or screenshot your transaction receipt.</li>
-                    <li>Upload the screenshot below.</li>
+                    <li><strong>Note your Reference Number</strong> from the receipt — GCash gives a 13-digit number; if you sent from <strong>Maya to this GCash number</strong>, your ref may contain letters and numbers. Both are accepted.</li>
+                    <li>Screenshot your receipt and upload it below.</li>
                 </ol>
+                <p style="font-size:.82rem;margin-top:8px;margin-bottom:0;color:var(--muted);">
+                    💡 <strong>Sent from Maya?</strong> Select this option (GCash) since you are sending <em>to</em> our GCash number. Enter the reference number shown in your Maya receipt.
+                </p>
             </div>
 
             <!-- PayMaya instructions -->
@@ -256,8 +259,8 @@ $cat_json = json_encode(array_map(fn($v) => $v['fee'], CATEGORIES));
                     <li>Enter the number: <span class="acct"><?= htmlspecialchars(PAYMAYA_NUMBER) ?></span></li>
                     <li>Account name: <strong><?= htmlspecialchars(PAYMAYA_NAME) ?></strong></li>
                     <li>Enter the exact registration fee as the amount.</li>
-                    <li>Save or screenshot your transaction receipt.</li>
-                    <li>Upload the screenshot below.</li>
+                    <li><strong>Note your Reference Number</strong> from the receipt — it may contain letters and numbers (e.g. <em>TXN-ABC123456</em>).</li>
+                    <li>Screenshot your receipt and upload it below.</li>
                 </ol>
             </div>
 
@@ -272,7 +275,19 @@ $cat_json = json_encode(array_map(fn($v) => $v['fee'], CATEGORIES));
             </div>
 
             <!-- Proof of payment upload -->
-            <div id="proof_section" class="mt-3" style="display:<?= in_array($old['payment_method'] ?? '', ['gcash','paymaya']) ? 'block' : 'none' ?>;">
+            <div id="proof_section" class="mt-3" style="display:<?= in_array($old['payment_method'] ?? '', ['gcash','paymaya']) ? 'block' : 'none' ?>">
+                <div class="mb-3">
+                    <label class="form-label">Payment Reference Number <span class="text-danger">*</span></label>
+                    <input type="text" name="payment_ref" id="payment_ref" class="form-control"
+                           value="<?= htmlspecialchars($old['payment_ref'] ?? '') ?>"
+                           placeholder="e.g. 1234567890123 or TXN-ABC12345"
+                           maxlength="40"
+                           pattern="[A-Za-z0-9\-\s]+"
+                           autocomplete="off">
+                    <div class="form-text" style="font-size:.78rem;">
+                        GCash: 13-digit number &nbsp;|&nbsp; Maya: alphanumeric (letters &amp; numbers). Copy it exactly from your receipt.
+                    </div>
+                </div>
                 <label class="form-label">Upload Proof of Payment <span class="text-danger">*</span></label>
                 <div class="upload-area" onclick="document.getElementById('payment_proof').click()">
                     <div class="upload-icon">📎</div>
@@ -352,6 +367,7 @@ document.querySelectorAll('input[name="payment_method"]').forEach(r => {
         document.getElementById('proof_section').style.display = needProof ? 'block' : 'none';
         if (!needProof) {
             document.getElementById('payment_proof').value = '';
+            document.getElementById('payment_ref').value = '';
             document.getElementById('file_preview').style.display = 'none';
             document.getElementById('file_name').textContent = '';
         }

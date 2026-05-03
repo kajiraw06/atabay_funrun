@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS registrations (
     category                 VARCHAR(10)  NOT NULL,
     shirt_size               ENUM('XS','S','M','L','XL','XXL') NOT NULL,
     payment_method           ENUM('gcash','paymaya','cash') NOT NULL,
+    payment_ref              VARCHAR(40)  DEFAULT NULL,
     payment_proof            VARCHAR(255) DEFAULT NULL,
     payment_status           ENUM('pending','verified','rejected') DEFAULT 'pending',
     registration_status      ENUM('pending','confirmed','cancelled') DEFAULT 'pending',
