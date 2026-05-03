@@ -449,6 +449,8 @@ async function doLogout() {
 // ── FILTER ─────────────────────────────────────────────
 function setFilter(f) {
     currentFilter = f;
+    document.getElementById('section_registrations').style.display = '';
+    document.getElementById('section_reserves').style.display      = 'none';
     document.querySelectorAll('.admin-sidebar a').forEach(a => a.classList.remove('active'));
     const el = document.getElementById('nav_' + f);
     if (el) el.classList.add('active');
