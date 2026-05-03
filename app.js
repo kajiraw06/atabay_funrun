@@ -173,6 +173,47 @@ async function adminSignOut() {
     return await _supabase.auth.signOut();
 }
 
+// ── Reserves CRUD ────────────────────────────────────────────────
+
+/** Fetch all reserves, newest first. Returns { data, error } */
+async function getReserves() {
+    const { data, error } = await _supabase
+        .from('reserves')
+        .select('*')
+        .order('created_at', { ascending: false });
+    return { data: data || [], error };
+}
+
+/** Insert a new reserve. Returns { data, error } */
+async function saveReserve(reserveData) {
+    const { data, error } = await _supabase
+        .from('reserves')
+        .insert([reserveData])
+        .select()
+        .single();
+    return { data, error };
+}
+
+/** Update a reserve by id. Returns { data, error } */
+async function updateReserve(id, updates) {
+    const { data, error } = await _supabase
+        .from('reserves')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+    return { data, error };
+}
+
+/** Delete a reserve by id. Returns { error } */
+async function deleteReserve(id) {
+    const { error } = await _supabase
+        .from('reserves')
+        .delete()
+        .eq('id', id);
+    return { error };
+}
+
 // ── CSV Export (pass already-fetched rows array) ─────────────────
 
 function exportCSV(regs) {

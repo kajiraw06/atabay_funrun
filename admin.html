@@ -50,6 +50,8 @@
         <a href="#" onclick="setFilter('verified')" id="nav_verified">✅ Verified / Paid</a>
         <a href="#" onclick="setFilter('rejected')" id="nav_rejected">❌ Rejected</a>
         <a href="#" onclick="setFilter('cash')" id="nav_cash">💵 Cash Walk-in</a>
+        <div style="border-top:1px solid rgba(255,255,255,.08);margin:10px 0;"></div>
+        <a href="#" onclick="showSection('reserves')" id="nav_reserves">📅 Reservations</a>
         <div style="padding:10px 20px;font-size:.72rem;color:rgba(255,255,255,.3);margin-top:8px;">CATEGORY</div>
         <a href="#" onclick="setFilter('3K')" id="nav_3K">3K Runners</a>
         <a href="#" onclick="setFilter('5K')" id="nav_5K">5K Runners</a>
@@ -77,6 +79,9 @@
 
         <!-- Stats row -->
         <div class="row g-3 mb-4" id="statsRow"></div>
+
+        <!-- Registrations section -->
+        <div id="section_registrations">
 
         <!-- Toolbar -->
         <div class="d-flex gap-2 mb-3 flex-wrap align-items-center">
@@ -119,9 +124,99 @@
         </div>
         <div id="tableFooter" class="text-muted mt-2" style="font-size:.78rem;"></div>
 
+        </div><!-- /section_registrations -->
+
+        <!-- Reserves section -->
+        <div id="section_reserves" style="display:none;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0">📅 Reservations <span id="reserveBadge" class="badge bg-secondary ms-2" style="font-size:.75rem;">0</span></h5>
+                <button onclick="openAddReserveModal()" class="btn btn-sm btn-primary" style="border-radius:8px;">➕ Add Reserve</button>
+            </div>
+            <p class="text-muted" style="font-size:.85rem;">People planning to register. You can track their interest and convert them to full registrants.</p>
+            <div class="table-responsive" style="background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.06);">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Notes</th>
+                            <th>Date Added</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reserveTableBody"><tr><td colspan="8" class="text-center text-muted py-4">⏳ Loading…</td></tr></tbody>
+                </table>
+            </div>
+            <div id="reserveFooter" class="text-muted mt-2" style="font-size:.78rem;"></div>
+        </div><!-- /section_reserves -->
     </div><!-- /main -->
 </div>
 </div><!-- /adminPanel -->
+
+<!-- ── ADD / EDIT RESERVE MODAL ─────────────────────────── -->
+<div class="modal fade" id="reserveModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius:14px;">
+            <div class="modal-header" style="background:var(--primary);color:#fff;border-radius:14px 14px 0 0;">
+                <h5 class="modal-title fw-bold" id="reserveModalTitle">📅 Add Reserve</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="reserveModalMsg" class="alert py-2 mb-3" style="display:none;"></div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">First Name <span class="text-danger">*</span></label>
+                        <input type="text" id="rv_first" class="form-control" maxlength="100">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Last Name <span class="text-danger">*</span></label>
+                        <input type="text" id="rv_last" class="form-control" maxlength="100">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Phone <span class="text-danger">*</span></label>
+                        <input type="text" id="rv_phone" class="form-control" maxlength="20" placeholder="09XXXXXXXXX">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Email <small class="text-muted">(optional)</small></label>
+                        <input type="email" id="rv_email" class="form-control" maxlength="150">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Interested Category</label>
+                        <select id="rv_category" class="form-select">
+                            <option value="">— Unknown —</option>
+                            <option value="3K">3K Fun Run — ₱500</option>
+                            <option value="5K">5K Run — ₱600</option>
+                            <option value="10K">10K Run — ₱700</option>
+                            <option value="3K-NS">3K No Singlet — ₱300</option>
+                            <option value="5K-NS">5K No Singlet — ₱400</option>
+                            <option value="10K-NS">10K No Singlet — ₱500</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Status</label>
+                        <select id="rv_status" class="form-select">
+                            <option value="interested">🙋 Interested</option>
+                            <option value="contacted">📞 Contacted</option>
+                            <option value="converted">✅ Converted to Registrant</option>
+                            <option value="cancelled">❌ Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Notes <small class="text-muted">(optional)</small></label>
+                        <textarea id="rv_notes" class="form-control" rows="2" placeholder="e.g. Will pay onsite, waiting for payday…"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button onclick="saveReserveModal()" id="reserveSaveBtn" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- ── ADD ONSITE REGISTRANT MODAL ──────────────────────── -->
 <div class="modal fade" id="addModal" tabindex="-1">
@@ -670,6 +765,154 @@ async function saveAddModal() {
 
     addModal.hide();
     await renderAll();
+}
+
+// ── SECTION SWITCHER ────────────────────────────────────
+function showSection(section) {
+    document.getElementById('section_registrations').style.display = section === 'registrations' ? '' : 'none';
+    document.getElementById('section_reserves').style.display      = section === 'reserves'      ? '' : 'none';
+    document.querySelectorAll('.admin-sidebar a').forEach(a => a.classList.remove('active'));
+    if (section === 'reserves') {
+        document.getElementById('nav_reserves').classList.add('active');
+        renderReserves();
+    } else {
+        document.getElementById('nav_all').classList.add('active');
+    }
+}
+
+// ── RESERVES ────────────────────────────────────────────
+let cachedReserves = [];
+let editingReserveId = null;
+let reserveModal;
+
+function openAddReserveModal() {
+    editingReserveId = null;
+    if (!reserveModal) reserveModal = new bootstrap.Modal(document.getElementById('reserveModal'));
+    document.getElementById('reserveModalTitle').textContent = '📅 Add Reserve';
+    document.getElementById('reserveSaveBtn').textContent = 'Add Reserve';
+    ['rv_first','rv_last','rv_phone','rv_email','rv_notes'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('rv_category').value = '';
+    document.getElementById('rv_status').value   = 'interested';
+    document.getElementById('reserveModalMsg').style.display = 'none';
+    reserveModal.show();
+}
+
+function openEditReserveModal(id) {
+    const r = cachedReserves.find(x => x.id === id);
+    if (!r) return;
+    editingReserveId = id;
+    if (!reserveModal) reserveModal = new bootstrap.Modal(document.getElementById('reserveModal'));
+    document.getElementById('reserveModalTitle').textContent = '✏️ Edit Reserve';
+    document.getElementById('reserveSaveBtn').textContent = 'Save Changes';
+    document.getElementById('rv_first').value    = r.first_name;
+    document.getElementById('rv_last').value     = r.last_name;
+    document.getElementById('rv_phone').value    = r.phone;
+    document.getElementById('rv_email').value    = r.email || '';
+    document.getElementById('rv_category').value = r.category || '';
+    document.getElementById('rv_status').value   = r.status || 'interested';
+    document.getElementById('rv_notes').value    = r.notes || '';
+    document.getElementById('reserveModalMsg').style.display = 'none';
+    reserveModal.show();
+}
+
+async function saveReserveModal() {
+    const msg   = document.getElementById('reserveModalMsg');
+    const first = document.getElementById('rv_first').value.trim();
+    const last  = document.getElementById('rv_last').value.trim();
+    const phone = document.getElementById('rv_phone').value.trim();
+    const email = document.getElementById('rv_email').value.trim();
+    const cat   = document.getElementById('rv_category').value;
+    const stat  = document.getElementById('rv_status').value;
+    const notes = document.getElementById('rv_notes').value.trim();
+
+    if (first.length < 2 || last.length < 2 || !phone) {
+        msg.className = 'alert alert-danger py-2 mb-3';
+        msg.textContent = 'First name, last name, and phone are required.';
+        msg.style.display = 'block';
+        return;
+    }
+
+    const btn = document.getElementById('reserveSaveBtn');
+    btn.disabled = true; btn.textContent = 'Saving…';
+
+    const payload = {
+        first_name: first, last_name: last, phone,
+        email: email || null, category: cat || null,
+        status: stat, notes: notes || null
+    };
+
+    let error;
+    if (editingReserveId) {
+        ({ error } = await updateReserve(editingReserveId, payload));
+    } else {
+        ({ error } = await saveReserve(payload));
+    }
+
+    btn.disabled = false;
+    btn.textContent = editingReserveId ? 'Save Changes' : 'Add Reserve';
+
+    if (error) {
+        msg.className = 'alert alert-danger py-2 mb-3';
+        msg.textContent = 'Error: ' + error.message;
+        msg.style.display = 'block';
+        return;
+    }
+    reserveModal.hide();
+    await renderReserves();
+}
+
+async function doDeleteReserve(id) {
+    if (!confirm('Remove this reserve entry?')) return;
+    const { error } = await deleteReserve(id);
+    if (error) { alert('Error: ' + error.message); return; }
+    await renderReserves();
+}
+
+const reserveStatusLabels = {
+    interested: '<span class="status-badge" style="background:#e8f4fd;color:#0d6efd;border:1px solid #b6d8f8;">🙋 Interested</span>',
+    contacted:  '<span class="status-badge" style="background:#fff3cd;color:#856404;border:1px solid #ffe082;">📞 Contacted</span>',
+    converted:  '<span class="status-badge" style="background:#d1e7dd;color:#0a3622;border:1px solid #a3cfbb;">✅ Converted</span>',
+    cancelled:  '<span class="status-badge" style="background:#f8d7da;color:#58151c;border:1px solid #f1aeb5;">❌ Cancelled</span>',
+};
+
+async function renderReserves() {
+    const tbody = document.getElementById('reserveTableBody');
+    tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted py-3">⏳ Loading…</td></tr>';
+    const { data, error } = await getReserves();
+    if (error) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center text-danger py-3">Error: ${error.message}</td></tr>`;
+        return;
+    }
+    cachedReserves = data;
+    document.getElementById('reserveBadge').textContent = data.length;
+    if (!data.length) {
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted py-4">No reserves yet.</td></tr>';
+        document.getElementById('reserveFooter').textContent = '0 records';
+        return;
+    }
+    tbody.innerHTML = data.map((r, i) => `
+        <tr>
+            <td style="font-size:.8rem;color:var(--muted);">${i + 1}</td>
+            <td>
+                <div class="fw-bold" style="font-size:.85rem;">${esc(r.first_name)} ${esc(r.last_name)}</div>
+                ${r.email ? `<div style="font-size:.73rem;color:var(--muted);">${esc(r.email)}</div>` : ''}
+            </td>
+            <td style="font-size:.83rem;">${esc(r.phone)}</td>
+            <td><strong style="color:var(--primary);font-size:.83rem;">${esc(r.category) || '—'}</strong></td>
+            <td>${reserveStatusLabels[r.status] || esc(r.status)}</td>
+            <td style="font-size:.78rem;max-width:160px;white-space:pre-wrap;">${esc(r.notes) || '—'}</td>
+            <td style="font-size:.73rem;white-space:nowrap;">
+                ${new Date(r.created_at).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'})}
+            </td>
+            <td>
+                <button class="btn btn-sm btn-outline-warning me-1" style="font-size:.72rem;border-radius:6px;"
+                    onclick="openEditReserveModal(${r.id})">✏️</button>
+                <button class="btn btn-sm btn-outline-danger" style="font-size:.72rem;border-radius:6px;"
+                    onclick="doDeleteReserve(${r.id})">🗑</button>
+            </td>
+        </tr>
+    `).join('');
+    document.getElementById('reserveFooter').textContent = `Showing ${data.length} reserve(s).`;
 }
 </script>
 </body>
