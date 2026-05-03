@@ -92,6 +92,9 @@
                 ⬆ Import JSON
                 <input type="file" accept=".json" style="display:none;" onchange="handleImportJSON(this)">
             </label>
+            <button onclick="openAddModal()" class="btn btn-primary" style="border-radius:8px;font-size:.85rem;">
+                ➕ Add Onsite Registrant
+            </button>
         </div>
 
         <!-- Table -->
@@ -119,6 +122,116 @@
     </div><!-- /main -->
 </div>
 </div><!-- /adminPanel -->
+
+<!-- ── ADD ONSITE REGISTRANT MODAL ──────────────────────── -->
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="border-radius:14px;">
+            <div class="modal-header" style="background:var(--primary);color:#fff;border-radius:14px 14px 0 0;">
+                <h5 class="modal-title fw-bold">➕ Add Onsite Registrant</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="addModalMsg" class="alert py-2 mb-3" style="display:none;"></div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">First Name <span class="text-danger">*</span></label>
+                        <input type="text" id="a_first" class="form-control" maxlength="100" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Last Name <span class="text-danger">*</span></label>
+                        <input type="text" id="a_last" class="form-control" maxlength="100" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Phone <span class="text-danger">*</span></label>
+                        <input type="text" id="a_phone" class="form-control" maxlength="20" placeholder="09XXXXXXXXX" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Email <small class="text-muted">(optional)</small></label>
+                        <input type="email" id="a_email" class="form-control" maxlength="150">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Address <span class="text-danger">*</span></label>
+                        <input type="text" id="a_address" class="form-control" maxlength="255" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Birthdate <span class="text-danger">*</span></label>
+                        <input type="date" id="a_birthdate" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Gender <span class="text-danger">*</span></label>
+                        <select id="a_gender" class="form-select" required>
+                            <option value="">— Select —</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Emergency Contact Name <span class="text-danger">*</span></label>
+                        <input type="text" id="a_ec_name" class="form-control" maxlength="150" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Emergency Contact Number <span class="text-danger">*</span></label>
+                        <input type="text" id="a_ec_num" class="form-control" maxlength="20" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Category <span class="text-danger">*</span></label>
+                        <select id="a_category" class="form-select" required>
+                            <option value="">— Select —</option>
+                            ${Object.entries(CONFIG?.categories || {}).map(([k,v]) => `<option value="${k}">${k} — ₱${v.fee}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Shirt Size <span class="text-danger">*</span></label>
+                        <select id="a_size" class="form-select" required>
+                            <option value="">— Select —</option>
+                            <option>XS</option><option>S</option><option>M</option>
+                            <option>L</option><option>XL</option><option>XXL</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Payment Method <span class="text-danger">*</span></label>
+                        <select id="a_payment" class="form-select" required>
+                            <option value="">— Select —</option>
+                            <option value="cash">Cash</option>
+                            <option value="gcash">GCash</option>
+                            <option value="paymaya">PayMaya / Maya</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">GCash/Maya Ref # <small class="text-muted">(if applicable)</small></label>
+                        <input type="text" id="a_ref" class="form-control" maxlength="40" placeholder="e.g. 1234567890123">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Payment Status</label>
+                        <select id="a_pstatus" class="form-select">
+                            <option value="verified">Verified ✅</option>
+                            <option value="pending">Pending</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Reg Status</label>
+                        <select id="a_rstatus" class="form-select">
+                            <option value="confirmed">Confirmed ✅</option>
+                            <option value="pending">Pending</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Notes <small class="text-muted">(optional)</small></label>
+                        <textarea id="a_notes" class="form-control" rows="2" placeholder="e.g. Paid onsite during kit claiming"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button onclick="saveAddModal()" id="addSaveBtn" class="btn btn-success">➕ Add Registrant</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- ── UPDATE MODAL ───────────────────────────────────── -->
 <div class="modal fade" id="updateModal" tabindex="-1">
@@ -453,6 +566,111 @@ function openDetail(ref) {
 
 // ── EXPORT CSV ──────────────────────────────────────────
 function doExportCSV() { exportCSV(cachedRegs); }
+
+// ── ADD ONSITE REGISTRANT ────────────────────────────────
+let addModal;
+function openAddModal() {
+    if (!addModal) addModal = new bootstrap.Modal(document.getElementById('addModal'));
+    // Populate category options dynamically
+    const sel = document.getElementById('a_category');
+    if (sel.options.length <= 1) {
+        Object.entries(CONFIG.categories).forEach(([k, v]) => {
+            const o = document.createElement('option');
+            o.value = k; o.textContent = k + ' — ₱' + v.fee;
+            sel.appendChild(o);
+        });
+    }
+    // Reset form
+    ['a_first','a_last','a_phone','a_email','a_address','a_birthdate',
+     'a_ec_name','a_ec_num','a_ref','a_notes'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('a_gender').value   = '';
+    document.getElementById('a_category').value = '';
+    document.getElementById('a_size').value     = '';
+    document.getElementById('a_payment').value  = '';
+    document.getElementById('a_pstatus').value  = 'verified';
+    document.getElementById('a_rstatus').value  = 'confirmed';
+    const msg = document.getElementById('addModalMsg');
+    msg.style.display = 'none';
+    addModal.show();
+}
+
+async function saveAddModal() {
+    const msg = document.getElementById('addModalMsg');
+    msg.style.display = 'none';
+
+    const first   = document.getElementById('a_first').value.trim();
+    const last    = document.getElementById('a_last').value.trim();
+    const phone   = document.getElementById('a_phone').value.trim();
+    const email   = document.getElementById('a_email').value.trim();
+    const address = document.getElementById('a_address').value.trim();
+    const bdate   = document.getElementById('a_birthdate').value;
+    const gender  = document.getElementById('a_gender').value;
+    const ec_name = document.getElementById('a_ec_name').value.trim();
+    const ec_num  = document.getElementById('a_ec_num').value.trim();
+    const cat     = document.getElementById('a_category').value;
+    const size    = document.getElementById('a_size').value;
+    const pay     = document.getElementById('a_payment').value;
+    const ref     = document.getElementById('a_ref').value.trim();
+    const pstatus = document.getElementById('a_pstatus').value;
+    const rstatus = document.getElementById('a_rstatus').value;
+    const notes   = document.getElementById('a_notes').value.trim();
+
+    const errs = [];
+    if (first.length < 2)   errs.push('First name required.');
+    if (last.length < 2)    errs.push('Last name required.');
+    if (!phone)              errs.push('Phone required.');
+    if (!address)            errs.push('Address required.');
+    if (!bdate)              errs.push('Birthdate required.');
+    if (!gender)             errs.push('Gender required.');
+    if (!ec_name)            errs.push('Emergency contact name required.');
+    if (!ec_num)             errs.push('Emergency contact number required.');
+    if (!cat)                errs.push('Category required.');
+    if (!size)               errs.push('Shirt size required.');
+    if (!pay)                errs.push('Payment method required.');
+
+    if (errs.length) {
+        msg.className = 'alert alert-danger py-2 mb-3';
+        msg.textContent = errs.join(' | ');
+        msg.style.display = 'block';
+        return;
+    }
+
+    const btn = document.getElementById('addSaveBtn');
+    btn.disabled = true; btn.textContent = 'Saving…';
+
+    const refNum = generateRef();
+    const { error } = await saveRegistration({
+        reference_number:         refNum,
+        first_name:               first,
+        last_name:                last,
+        email:                    email || null,
+        phone,
+        address,
+        birthdate:                bdate,
+        gender,
+        emergency_contact_name:   ec_name,
+        emergency_contact_number: ec_num,
+        category:                 cat,
+        shirt_size:               size,
+        payment_method:           pay,
+        payment_ref:              ref || null,
+        payment_status:           pstatus,
+        status:                   rstatus,
+        notes:                    notes || null,
+    });
+
+    btn.disabled = false; btn.textContent = '➕ Add Registrant';
+
+    if (error) {
+        msg.className = 'alert alert-danger py-2 mb-3';
+        msg.textContent = 'Error: ' + error.message;
+        msg.style.display = 'block';
+        return;
+    }
+
+    addModal.hide();
+    await renderAll();
+}
 </script>
 </body>
 </html>
