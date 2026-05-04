@@ -274,7 +274,6 @@
                         <label class="form-label fw-bold">Category <span class="text-danger">*</span></label>
                         <select id="a_category" class="form-select" required>
                             <option value="">— Select —</option>
-                            ${Object.entries(CONFIG?.categories || {}).map(([k,v]) => `<option value="${k}">${k} — ₱${v.fee}</option>`).join('')}
                         </select>
                     </div>
                     <div class="col-md-4">
