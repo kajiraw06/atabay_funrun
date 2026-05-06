@@ -263,6 +263,17 @@
             </div>
             <div class="modal-body">
                 <div id="addModalMsg" class="alert py-2 mb-3" style="display:none;"></div>
+                <!-- Quick paste auto-fill -->
+                <div class="mb-3 p-3" style="background:#f0fdf4;border:1.5px dashed #27ae60;border-radius:10px;">
+                    <label class="form-label fw-bold mb-1" style="color:#27ae60;font-size:.82rem;">📋 Paste info to auto-fill &nbsp;<small class="text-muted fw-normal">(Name, Address, Category, Size…)</small></label>
+                    <textarea id="a_quickpaste" class="form-control font-monospace"
+                        rows="3"
+                        placeholder="Name: Johnrick Aleonar&#10;Address: Brgy Guinsangaan, Bontoc Southern Leyte&#10;Category: 5k&#10;Size: S"
+                        onpaste="setTimeout(()=>parseQuickFill(this.value),30)"
+                        oninput="parseQuickFill(this.value)"
+                        style="font-size:.8rem;resize:vertical;"></textarea>
+                    <div id="a_qp_msg" style="font-size:.75rem;color:#27ae60;min-height:1.2em;margin-top:4px;"></div>
+                </div>
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label fw-bold">First Name <span class="text-danger">*</span></label>
@@ -761,6 +772,97 @@ function openDetail(ref) {
 function doExportCSV() { exportCSV(cachedRegs); }
 
 // ── ADD ONSITE REGISTRANT ────────────────────────────────
+function parseQuickFill(text) {
+    if (!text.trim()) return;
+    const msg = document.getElementById('a_qp_msg');
+    const filled = [];
+
+    // Normalize: allow "Key: value" or "Key:value", case-insensitive
+    const get = (key) => {
+        const re = new RegExp('^' + key + '\\s*:\\s*(.+)', 'im');
+        const m = text.match(re);
+        return m ? m[1].trim() : null;
+    };
+
+    // Name
+    const rawName = get('name');
+    if (rawName) {
+        const parts = rawName.trim().split(/\s+/);
+        if (parts.length >= 2) {
+            document.getElementById('a_last').value  = parts[parts.length - 1];
+            document.getElementById('a_first').value = parts.slice(0, -1).join(' ');
+        } else {
+            document.getElementById('a_first').value = rawName;
+        }
+        filled.push('Name');
+    }
+
+    // Address
+    const addr = get('address') || get('addr');
+    if (addr) { document.getElementById('a_address').value = addr; filled.push('Address'); }
+
+    // Category
+    const catRaw = get('category') || get('cat');
+    if (catRaw) {
+        const catMap = { '3k':'3K','3km':'3K','5k':'5K','5km':'5K','10k':'10K','10km':'10K' };
+        const key = catRaw.toLowerCase().replace(/[^a-z0-9]/g,'');
+        const cat = catMap[key];
+        if (cat) {
+            const sel = document.getElementById('a_category');
+            // Ensure options are populated
+            if (sel.options.length <= 1) {
+                Object.entries(CONFIG.categories).forEach(([k,v]) => {
+                    const o = document.createElement('option'); o.value=k; o.textContent=k+' — ₱'+v.fee; sel.appendChild(o);
+                });
+            }
+            for (const o of sel.options) { if (o.value === cat) { o.selected = true; break; } }
+            filled.push('Category');
+        }
+    }
+
+    // Shirt Size
+    const sizeRaw = get('size') || get('shirt') || get('shirt size');
+    if (sizeRaw) {
+        const sz = sizeRaw.toUpperCase().trim();
+        const validSizes = ['XS','S','M','L','XL','XXL'];
+        if (validSizes.includes(sz)) {
+            const sel = document.getElementById('a_size');
+            for (const o of sel.options) { if (o.value === sz) { o.selected = true; break; } }
+            filled.push('Size');
+        }
+    }
+
+    // Phone
+    const phone = get('phone') || get('contact') || get('mobile');
+    if (phone) { document.getElementById('a_phone').value = phone; filled.push('Phone'); }
+
+    // Email
+    const email = get('email');
+    if (email) { document.getElementById('a_email').value = email; filled.push('Email'); }
+
+    // Gender
+    const gender = get('gender') || get('sex');
+    if (gender) {
+        const g = gender.trim().toLowerCase();
+        const sel = document.getElementById('a_gender');
+        for (const o of sel.options) {
+            if (o.value.toLowerCase() === g || o.textContent.toLowerCase().startsWith(g)) { o.selected = true; break; }
+        }
+        filled.push('Gender');
+    }
+
+    // Amount → put in notes if no direct field
+    const amount = get('amount') || get('paid') || get('fee');
+    if (amount) {
+        const notesEl = document.getElementById('a_notes');
+        if (!notesEl.value.includes('Amount')) notesEl.value = ('Amount: ₱' + amount + (notesEl.value ? '\n' + notesEl.value : '')).trim();
+        filled.push('Notes (amount)');
+    }
+
+    msg.textContent = filled.length ? '✅ Filled: ' + filled.join(', ') : '⚠️ Nothing recognized — check format.';
+    msg.style.color = filled.length ? '#27ae60' : '#c0392b';
+}
+
 let addModal;
 function openAddModal() {
     if (!addModal) addModal = new bootstrap.Modal(document.getElementById('addModal'));
@@ -782,6 +884,8 @@ function openAddModal() {
     document.getElementById('a_payment').value  = '';
     document.getElementById('a_pstatus').value  = 'verified';
     document.getElementById('a_rstatus').value  = 'confirmed';
+    document.getElementById('a_quickpaste').value = '';
+    document.getElementById('a_qp_msg').textContent = '';
     const msg = document.getElementById('addModalMsg');
     msg.style.display = 'none';
     addModal.show();
