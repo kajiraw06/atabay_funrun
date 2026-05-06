@@ -455,7 +455,7 @@
         r.addEventListener('change', () => {
             const cat = CONFIG.categories[r.value];
             const isNS = cat.noSinglet;
-            // shirtTypeSection is always visible
+            document.getElementById('shirtTypeSection').style.display = isNS ? 'none' : '';
             document.getElementById('shirtSizeSection').style.display = isNS ? 'none' : '';
             document.getElementById('noSingletNotice').style.display  = isNS ? '' : 'none';
             document.getElementById('st_singlet').checked = true;
