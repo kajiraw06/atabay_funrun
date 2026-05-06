@@ -225,30 +225,30 @@
         <div class="form-card">
             <div class="section-title">③ Race Category & Shirt Type</div>
 
-            <label class="form-label mb-2">Choose your category <span class="text-danger">*</span></label>
-            <div class="category-grid mb-3" id="categoryGrid"></div>
-
-            <div id="feeNotice" class="mb-3" style="display:none;font-size:.88rem;">
-                Total fee: <strong id="feeAmount" style="color:var(--primary);font-size:1rem;"></strong>
-            </div>
-
-            <!-- Shirt type choice -->
-            <div id="shirtTypeSection" style="display:none;" class="mb-3">
+            <!-- Shirt type choice (always visible) -->
+            <div id="shirtTypeSection" class="mb-3">
                 <label class="form-label mb-2">Shirt Type <span class="text-danger">*</span></label>
                 <div style="display:flex;gap:12px;flex-wrap:wrap;">
                     <div style="border:1.5px solid var(--primary);border-radius:10px;padding:10px 16px;cursor:pointer;flex:1;min-width:140px;background:#f0f7ff;" id="shirtTypeSingletCard">
                         <input class="form-check-input" type="radio" name="shirtType" id="st_singlet" value="singlet" checked>
                         <label class="form-check-label fw-semibold" for="st_singlet" style="cursor:pointer;">
-                            🎛️ Singlet <span style="font-size:.8rem;color:var(--muted);font-weight:400;">(included)</span>
+                            🎽 Singlet <span style="font-size:.8rem;color:var(--muted);font-weight:400;">(included)</span>
                         </label>
                     </div>
                     <div style="border:1.5px solid #ccc;border-radius:10px;padding:10px 16px;cursor:pointer;flex:1;min-width:140px;" id="shirtTypeTshirtCard">
                         <input class="form-check-input" type="radio" name="shirtType" id="st_tshirt" value="tshirt">
                         <label class="form-check-label fw-semibold" for="st_tshirt" style="cursor:pointer;">
-                            👕 T-Shirt <span style="color:#888;font-weight:500;font-size:.85em;">(included)</span>
+                            👕 T-Shirt <span style="font-size:.8rem;color:var(--muted);font-weight:400;">(included)</span>
                         </label>
                     </div>
                 </div>
+            </div>
+
+            <label class="form-label mb-2">Choose your category <span class="text-danger">*</span></label>
+            <div class="category-grid mb-3" id="categoryGrid"></div>
+
+            <div id="feeNotice" class="mb-3" style="display:none;font-size:.88rem;">
+                Total fee: <strong id="feeAmount" style="color:var(--primary);font-size:1rem;"></strong>
             </div>
 
             <div id="shirtSizeSection" style="display:none;">
@@ -401,7 +401,7 @@
     const withSinglet = Object.entries(CONFIG.categories).filter(([,c]) => !c.noSinglet);
     const noSinglet   = Object.entries(CONFIG.categories).filter(([,c]) =>  c.noSinglet);
 
-    grid.innerHTML += `<div class="category-grid-label" style="font-size:.75rem;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">With Singlet</div>`;
+
     withSinglet.forEach(([key, cat]) => {
         grid.innerHTML += `
         <div class="category-card">
@@ -455,7 +455,7 @@
         r.addEventListener('change', () => {
             const cat = CONFIG.categories[r.value];
             const isNS = cat.noSinglet;
-            document.getElementById('shirtTypeSection').style.display = isNS ? 'none' : '';
+            // shirtTypeSection is always visible
             document.getElementById('shirtSizeSection').style.display = isNS ? 'none' : '';
             document.getElementById('noSingletNotice').style.display  = isNS ? '' : 'none';
             document.getElementById('st_singlet').checked = true;
