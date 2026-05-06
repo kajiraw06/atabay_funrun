@@ -1159,9 +1159,8 @@ async function saveBulkReserves() {
     await renderReserves();
     await renderStats();
 }
-</script>
-</body>
-</html>function adjustOffset(delta) {
+
+function adjustOffset(delta) {
     const input = document.getElementById('offsetInput');
     input.value = (parseInt(input.value, 10) || 0) + delta;
     saveOffsetInput();
