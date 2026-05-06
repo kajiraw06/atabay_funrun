@@ -149,12 +149,11 @@
     document.getElementById('sName').textContent    = reg.first_name + ' ' + reg.last_name;
     document.getElementById('sPhone').textContent   = reg.phone;
     document.getElementById('sCat').textContent     = cat.label || reg.category;
-    const tshirtAdd = reg.with_tshirt ? CONFIG.tshirtFee : 0;
-    const totalFee  = (cat.fee || 0) + tshirtAdd;
+    const totalFee  = (cat.fee || 0);
     document.getElementById('sFee').innerHTML       = '<strong style="color:var(--primary)">' + peso(totalFee) + '</strong>';
     if (reg.with_tshirt) {
         document.getElementById('sTshirtRow').style.display = '';
-        document.getElementById('sTshirt').innerHTML = '<span style="color:var(--primary);font-weight:600;">👕 T-Shirt (+₱50)</span>';
+        document.getElementById('sTshirt').innerHTML = '<span style="color:var(--primary);font-weight:600;">👕 T-Shirt</span>';
     } else {
         document.getElementById('sTshirtRow').style.display = '';
         document.getElementById('sTshirt').innerHTML = '🎽 Singlet (included)';

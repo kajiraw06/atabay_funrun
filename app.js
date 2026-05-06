@@ -30,7 +30,7 @@ const CONFIG = {
     // Admin password (used only as a fallback label — real auth is Supabase Auth)
     adminPassword: 'Admin@2026',
 
-    tshirtFee: 50,
+    tshirtFee: 0,
 
     categories: {
         '3K':    { label: '3K Fun Run',          fee: 500,
