@@ -55,7 +55,7 @@
                     <tr><td class="fw-bold">Phone</td>                             <td id="sPhone"></td></tr>
                     <tr><td class="fw-bold">Race Category</td>                     <td id="sCat"></td></tr>
                     <tr><td class="fw-bold">Registration Fee</td>                  <td id="sFee"></td></tr>
-                    <tr id="sTshirtRow" style="display:none;"><td class="fw-bold">T-Shirt Add-on</td>       <td id="sTshirt"></td></tr>
+                    <tr id="sTshirtRow" style="display:none;"><td class="fw-bold">Shirt Type</td>          <td id="sTshirt"></td></tr>
                     <tr><td class="fw-bold">Singlet Size</td>                      <td id="sShirt"></td></tr>
                     <tr><td class="fw-bold">Payment Method</td>                    <td id="sPay"></td></tr>
                     <tr id="sRefRow"><td class="fw-bold">Transaction Ref #</td>   <td id="sRef"></td></tr>
@@ -154,7 +154,10 @@
     document.getElementById('sFee').innerHTML       = '<strong style="color:var(--primary)">' + peso(totalFee) + '</strong>';
     if (reg.with_tshirt) {
         document.getElementById('sTshirtRow').style.display = '';
-        document.getElementById('sTshirt').innerHTML = '<span style="color:var(--primary);font-weight:600;">+₱50 ✔</span>';
+        document.getElementById('sTshirt').innerHTML = '<span style="color:var(--primary);font-weight:600;">👕 T-Shirt (+₱50)</span>';
+    } else {
+        document.getElementById('sTshirtRow').style.display = '';
+        document.getElementById('sTshirt').innerHTML = '🎽 Singlet (included)';
     }
     document.getElementById('sShirt').textContent   = reg.shirt_size;
     document.getElementById('sPay').textContent     = payLabels[reg.payment_method] || reg.payment_method;
