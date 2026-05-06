@@ -284,8 +284,8 @@
                         <input type="text" id="a_last" class="form-control" maxlength="100" required>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Phone <span class="text-danger">*</span></label>
-                        <input type="text" id="a_phone" class="form-control" maxlength="20" placeholder="09XXXXXXXXX" required>
+                        <label class="form-label fw-bold">Phone <small class="text-muted">(optional)</small></label>
+                        <input type="text" id="a_phone" class="form-control" maxlength="20" placeholder="09XXXXXXXXX">
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Email <small class="text-muted">(optional)</small></label>
@@ -296,12 +296,12 @@
                         <input type="text" id="a_address" class="form-control" maxlength="255" required>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Birthdate <span class="text-danger">*</span></label>
-                        <input type="date" id="a_birthdate" class="form-control" required>
+                        <label class="form-label fw-bold">Birthdate <small class="text-muted">(optional)</small></label>
+                        <input type="date" id="a_birthdate" class="form-control">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Gender <span class="text-danger">*</span></label>
-                        <select id="a_gender" class="form-select" required>
+                        <label class="form-label fw-bold">Gender <small class="text-muted">(optional)</small></label>
+                        <select id="a_gender" class="form-select">
                             <option value="">— Select —</option>
                             <option>Male</option>
                             <option>Female</option>
@@ -309,12 +309,12 @@
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Emergency Contact Name <span class="text-danger">*</span></label>
-                        <input type="text" id="a_ec_name" class="form-control" maxlength="150" required>
+                        <label class="form-label fw-bold">Emergency Contact Name <small class="text-muted">(optional)</small></label>
+                        <input type="text" id="a_ec_name" class="form-control" maxlength="150">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Emergency Contact Number <span class="text-danger">*</span></label>
-                        <input type="text" id="a_ec_num" class="form-control" maxlength="20" required>
+                        <label class="form-label fw-bold">Emergency Contact Number <small class="text-muted">(optional)</small></label>
+                        <input type="text" id="a_ec_num" class="form-control" maxlength="20">
                     </div>
                     <div class="col-md-4">
                         <label class="form-label fw-bold">Category <span class="text-danger">*</span></label>
@@ -915,12 +915,7 @@ async function saveAddModal() {
     const errs = [];
     if (first.length < 2)   errs.push('First name required.');
     if (last.length < 2)    errs.push('Last name required.');
-    if (!phone)              errs.push('Phone required.');
     if (!address)            errs.push('Address required.');
-    if (!bdate)              errs.push('Birthdate required.');
-    if (!gender)             errs.push('Gender required.');
-    if (!ec_name)            errs.push('Emergency contact name required.');
-    if (!ec_num)             errs.push('Emergency contact number required.');
     if (!cat)                errs.push('Category required.');
     if (!size)               errs.push('Shirt size required.');
     if (!pay)                errs.push('Payment method required.');
