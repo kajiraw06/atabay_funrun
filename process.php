@@ -31,6 +31,7 @@ $category                 = clean($_POST['category']                 ?? '');
 $shirt_size               = clean($_POST['shirt_size']               ?? '');
 $payment_method           = clean($_POST['payment_method']           ?? '');
 $payment_ref              = clean($_POST['payment_ref']              ?? '');
+$with_tshirt              = isset($_POST['with_tshirt']) ? 1 : 0;
 $agree_terms              = isset($_POST['agree_terms']) ? 1 : 0;
 
 // ── VALIDATION ──────────────────────────────────────────────────
@@ -145,6 +146,7 @@ if (!empty($errors)) {
         'emergency_contact_number' => $emergency_contact_number,
         'category'                 => $category,
         'shirt_size'               => $shirt_size,
+        'with_tshirt'              => $with_tshirt,
         'payment_method'           => $payment_method,
         'payment_ref'              => $payment_ref,
     ];
@@ -169,19 +171,19 @@ $stmt = $conn->prepare(
     'INSERT INTO registrations
         (reference_number, first_name, last_name, email, phone, address,
          birthdate, gender, emergency_contact_name, emergency_contact_number,
-         category, shirt_size, payment_method, payment_ref, payment_proof, payment_status)
-     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+         category, shirt_size, with_tshirt, payment_method, payment_ref, payment_proof, payment_status)
+     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 );
 
 $pay_status = ($payment_method === 'cash') ? 'verified' : 'pending';
 
 $stmt->bind_param(
-    'ssssssssssssssss',
+    'ssssssssssssissss',
     $ref_num,
     $first_name, $last_name, $email, $phone, $address,
     $birthdate, $gender,
     $emergency_contact_name, $emergency_contact_number,
-    $category, $shirt_size,
+    $category, $shirt_size, $with_tshirt,
     $payment_method, $payment_ref, $proof_filename, $pay_status
 );
 
@@ -204,6 +206,7 @@ $_SESSION['reg_success'] = [
     'email'          => $email,
     'category'       => CATEGORIES[$category]['label'],
     'fee'            => CATEGORIES[$category]['fee'],
+    'with_tshirt'    => $with_tshirt,
     'shirt_size'     => $shirt_size,
     'payment_method' => $payment_method,
 ];

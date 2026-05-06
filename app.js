@@ -30,6 +30,8 @@ const CONFIG = {
     // Admin password (used only as a fallback label — real auth is Supabase Auth)
     adminPassword: 'Admin@2026',
 
+    tshirtFee: 50,
+
     categories: {
         '3K':    { label: '3K Fun Run',          fee: 500,
                    includes: 'Singlet · Finisher Medal · Hydration Station · Racebib · Post Race Snack · Raffle',

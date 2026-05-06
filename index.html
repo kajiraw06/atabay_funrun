@@ -229,7 +229,8 @@
             <div class="category-grid mb-3" id="categoryGrid"></div>
 
             <div id="feeNotice" class="mb-3" style="display:none;font-size:.88rem;">
-                Registration fee: <strong id="feeAmount" style="color:var(--primary);font-size:1rem;"></strong>
+                Total fee: <strong id="feeAmount" style="color:var(--primary);font-size:1rem;"></strong>
+                <span id="tshirtFeeNote" style="display:none;font-size:.78rem;color:var(--muted);"> (incl. +₱50 T-shirt add-on)</span>
             </div>
 
             <div id="shirtSizeSection">
@@ -241,6 +242,21 @@
             </div>
             <div id="noSingletNotice" style="display:none;" class="alert alert-info py-2" style="font-size:.85rem;">
                 👕 No singlet for this entry — no singlet size needed.
+            </div>
+
+            <!-- T-shirt add-on -->
+            <div class="mt-3" id="tshirtAddon" style="display:none;">
+                <div style="border:1.5px dashed var(--primary);border-radius:10px;padding:12px 14px;background:#f0f7ff;">
+                    <div class="form-check mb-0">
+                        <input class="form-check-input" type="checkbox" id="withTshirt" value="1">
+                        <label class="form-check-label fw-semibold" for="withTshirt" style="font-size:.9rem;cursor:pointer;">
+                            👕 Add Event T-Shirt <span style="color:var(--primary);font-weight:700;">+₱50</span>
+                        </label>
+                    </div>
+                    <div style="font-size:.76rem;color:var(--muted);margin-top:3px;padding-left:24px;">
+                        Optional add-on. T-shirt will be given during race kit claiming.
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -410,17 +426,31 @@
         </div>`;
     });
 
+    function refreshFeeDisplay() {
+        const catRadio = document.querySelector('input[name="category"]:checked');
+        if (!catRadio) return;
+        const cat = CONFIG.categories[catRadio.value];
+        const withTshirt = document.getElementById('withTshirt').checked;
+        const total = cat.fee + (withTshirt ? CONFIG.tshirtFee : 0);
+        document.getElementById('feeAmount').textContent = peso(total);
+        document.getElementById('tshirtFeeNote').style.display = withTshirt ? 'inline' : 'none';
+        document.getElementById('feeNotice').style.display = 'block';
+    }
+
     document.querySelectorAll('input[name="category"]').forEach(r => {
         r.addEventListener('change', () => {
             const cat = CONFIG.categories[r.value];
-            document.getElementById('feeAmount').textContent = peso(cat.fee);
-            document.getElementById('feeNotice').style.display = 'block';
             // Show/hide shirt size section
             const isNS = cat.noSinglet;
             document.getElementById('shirtSizeSection').style.display  = isNS ? 'none' : '';
             document.getElementById('noSingletNotice').style.display    = isNS ? '' : 'none';
+            // Show t-shirt add-on and refresh fee
+            document.getElementById('tshirtAddon').style.display = '';
+            refreshFeeDisplay();
         });
     });
+
+    document.getElementById('withTshirt').addEventListener('change', refreshFeeDisplay);
 })();
 
 // ── Build shirt size grid ───────────────────────────────
@@ -519,6 +549,7 @@ document.getElementById('regForm').addEventListener('submit', async function(e) 
     const shirtSize = isNoSinglet ? 'N/A' : (document.querySelector('input[name="shirtSize"]:checked')?.value || '');
     const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value || '';
     const paymentRef = document.getElementById('paymentRef').value.trim();
+    const withTshirt = document.getElementById('withTshirt').checked;
     const healthOk  = document.getElementById('healthDeclaration').checked;
     const agreed    = document.getElementById('agreeTerms').checked;
 
@@ -582,6 +613,7 @@ document.getElementById('regForm').addEventListener('submit', async function(e) 
         emergency_contact_number: emergencyPhone,
         category,
         shirt_size:               shirtSize,
+        with_tshirt:              withTshirt,
         payment_method:           paymentMethod,
         payment_ref:              paymentRef || null,
         payment_status:           'pending',
