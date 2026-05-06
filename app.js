@@ -102,10 +102,22 @@ async function checkPaymentRefExists(paymentRef) {
     return { exists: !!data, error };
 }
 
-/** Get total number of registrations. Returns { count, error } */
+/** Get total public counter (registrations + active reserves + offset). Returns { count, error } */
 async function getRegistrationCount() {
     const { data, error } = await _supabase.rpc('get_registration_count');
     return { count: data || 0, error };
+}
+
+/** Get the current counter offset (admin only). Returns { offset, error } */
+async function getCounterOffset() {
+    const { data, error } = await _supabase.rpc('get_counter_offset');
+    return { offset: data ?? 0, error };
+}
+
+/** Set a new counter offset (admin only). Returns { error } */
+async function setCounterOffset(value) {
+    const { error } = await _supabase.rpc('set_counter_offset', { p_offset: Number(value) });
+    return { error };
 }
 
 /** Lookup registrations by first + last name. Returns { data, error } */
