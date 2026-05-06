@@ -160,9 +160,12 @@
 
         <!-- Reserves section -->
         <div id="section_reserves" style="display:none;">
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                 <h5 class="fw-bold mb-0">📅 Reservations <span id="reserveBadge" class="badge bg-secondary ms-2" style="font-size:.75rem;">0</span></h5>
-                <button onclick="openAddReserveModal()" class="btn btn-sm btn-primary" style="border-radius:8px;">➕ Add Reserve</button>
+                <div class="d-flex gap-2 flex-wrap">
+                    <button onclick="openBulkImportModal()" class="btn btn-sm btn-outline-success" style="border-radius:8px;">📋 Bulk Import</button>
+                    <button onclick="openAddReserveModal()" class="btn btn-sm btn-primary" style="border-radius:8px;">➕ Add Reserve</button>
+                </div>
             </div>
             <p class="text-muted" style="font-size:.85rem;">People planning to register. You can track their interest and convert them to full registrants.</p>
             <div class="table-responsive" style="background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.06);">
@@ -418,6 +421,56 @@
             <div class="modal-body" id="detailBody"></div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── BULK IMPORT RESERVES MODAL ───────────────────────── -->
+<div class="modal fade" id="bulkImportModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="border-radius:14px;">
+            <div class="modal-header" style="background:var(--teal);color:#fff;border-radius:14px 14px 0 0;">
+                <h5 class="modal-title fw-bold">📋 Bulk Import Reserves</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size:.85rem;color:var(--muted);margin-bottom:8px;">
+                    Paste your list below. Accepted format per line:<br>
+                    <code style="font-size:.8rem;">1. First Last  3km  M</code> &nbsp;—&nbsp; number, name, category (3k/5k/10k), size (optional)
+                </p>
+                <textarea id="bulkPasteArea" class="form-control font-monospace mb-3"
+                    rows="10" placeholder="Paste your list here…&#10;&#10;1. Leila Basis  3km  S&#10;2. Al Davi Basis  3km  M&#10;3. Donna Fordaliza  3km  M"
+                    oninput="parseBulkInput()" onpaste="setTimeout(parseBulkInput,50)"></textarea>
+
+                <div id="bulkPreviewWrap" style="display:none;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <strong id="bulkPreviewTitle" style="font-size:.88rem;"></strong>
+                        <button onclick="clearBulkArea()" class="btn btn-sm btn-outline-secondary" style="border-radius:8px;font-size:.75rem;">✕ Clear</button>
+                    </div>
+                    <div class="table-responsive" style="max-height:300px;overflow-y:auto;">
+                        <table class="table table-sm table-bordered mb-0" style="font-size:.82rem;">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Category</th>
+                                    <th>Shirt Size</th>
+                                    <th>⚠️</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bulkPreviewBody"></tbody>
+                        </table>
+                    </div>
+                    <div id="bulkParseErrors" style="display:none;margin-top:8px;font-size:.78rem;color:#c0392b;"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button onclick="saveBulkReserves()" id="bulkSaveBtn" class="btn btn-success" disabled style="border-radius:8px;">
+                    ⬆ Import All
+                </button>
             </div>
         </div>
     </div>
@@ -960,8 +1013,155 @@ async function renderReserves() {
     document.getElementById('reserveFooter').textContent = `Showing ${data.length} reserve(s).`;
 }
 
-// ── COUNTER OFFSET ADJUSTER ─────────────────────────────
-function adjustOffset(delta) {
+// ── BULK IMPORT RESERVES ────────────────────────────────
+let bulkModal;
+let parsedBulkRows = [];
+
+function openBulkImportModal() {
+    if (!bulkModal) bulkModal = new bootstrap.Modal(document.getElementById('bulkImportModal'));
+    document.getElementById('bulkPasteArea').value = '';
+    document.getElementById('bulkPreviewWrap').style.display = 'none';
+    document.getElementById('bulkSaveBtn').disabled = true;
+    parsedBulkRows = [];
+    bulkModal.show();
+    setTimeout(() => document.getElementById('bulkPasteArea').focus(), 300);
+}
+
+function clearBulkArea() {
+    document.getElementById('bulkPasteArea').value = '';
+    document.getElementById('bulkPreviewWrap').style.display = 'none';
+    document.getElementById('bulkSaveBtn').disabled = true;
+    parsedBulkRows = [];
+}
+
+function parseBulkInput() {
+    const text = document.getElementById('bulkPasteArea').value;
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+
+    const catMap = {
+        '3k': '3K', '3km': '3K',
+        '5k': '5K', '5km': '5K',
+        '10k': '10K', '10km': '10K',
+    };
+    const validSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+
+    parsedBulkRows = [];
+    const errors = [];
+
+    lines.forEach((line, lineIdx) => {
+        // Strip leading number + dot/paren: "1. " "1) " "1 "
+        let cleaned = line.replace(/^\d+[\.\)\-]?\s*/, '').trim();
+        // Strip trailing punctuation (dots, commas)
+        cleaned = cleaned.replace(/[.,]+$/, '').trim();
+        if (!cleaned) return;
+
+        const tokens = cleaned.split(/\s+/);
+
+        // Find category token (scan right-to-left so multi-word names work)
+        let catIdx = -1;
+        let category = '';
+        for (let i = tokens.length - 1; i >= 0; i--) {
+            const t = tokens[i].toLowerCase().replace(/[^a-z0-9]/g, '');
+            if (catMap[t]) { category = catMap[t]; catIdx = i; break; }
+        }
+
+        if (catIdx === -1) {
+            errors.push(`Line ${lineIdx + 1}: could not detect category — "${line}"`);
+            parsedBulkRows.push({ error: true, raw: line, firstName: '', lastName: '', category: '', shirtSize: '' });
+            return;
+        }
+
+        // Size: token right after category if it's a valid size
+        let shirtSize = '';
+        const afterCat = tokens.slice(catIdx + 1);
+        if (afterCat.length > 0 && validSizes.includes(afterCat[0].toUpperCase())) {
+            shirtSize = afterCat[0].toUpperCase();
+        }
+
+        // Name = everything before category, strip trailing dots
+        const nameParts = tokens.slice(0, catIdx).map(p => p.replace(/\.$/, '').trim()).filter(p => p);
+        let firstName = '', lastName = '';
+        if (nameParts.length === 0) {
+            errors.push(`Line ${lineIdx + 1}: no name found — "${line}"`);
+            parsedBulkRows.push({ error: true, raw: line, firstName: '', lastName: '', category, shirtSize });
+            return;
+        } else if (nameParts.length === 1) {
+            firstName = nameParts[0]; lastName = '';
+        } else {
+            lastName    = nameParts[nameParts.length - 1];
+            firstName   = nameParts.slice(0, -1).join(' ');
+        }
+
+        parsedBulkRows.push({ error: false, raw: line, firstName, lastName, category, shirtSize });
+    });
+
+    // Render preview
+    const wrap = document.getElementById('bulkPreviewWrap');
+    const tbody = document.getElementById('bulkPreviewBody');
+    const errDiv = document.getElementById('bulkParseErrors');
+
+    if (!parsedBulkRows.length) { wrap.style.display = 'none'; document.getElementById('bulkSaveBtn').disabled = true; return; }
+
+    wrap.style.display = '';
+    const good = parsedBulkRows.filter(r => !r.error).length;
+    document.getElementById('bulkPreviewTitle').textContent =
+        `${parsedBulkRows.length} line(s) parsed — ${good} ready to import`;
+
+    tbody.innerHTML = parsedBulkRows.map((r, i) => `
+        <tr style="${r.error ? 'background:#fff3f3;' : ''}">
+            <td>${i + 1}</td>
+            <td contenteditable="${!r.error}" style="min-width:90px;" onblur="updateBulkCell(${i},'firstName',this.textContent)">${esc(r.firstName)}</td>
+            <td contenteditable="${!r.error}" style="min-width:90px;" onblur="updateBulkCell(${i},'lastName',this.textContent)">${esc(r.lastName)}</td>
+            <td>${r.error ? '<span style="color:#c0392b;">?</span>' : esc(r.category)}</td>
+            <td>${esc(r.shirtSize) || '<span style="color:#aaa;">—</span>'}</td>
+            <td>${r.error ? '⚠️' : '✅'}</td>
+        </tr>`).join('');
+
+    if (errors.length) {
+        errDiv.innerHTML = '⚠️ ' + errors.join('<br>');
+        errDiv.style.display = 'block';
+    } else {
+        errDiv.style.display = 'none';
+    }
+
+    document.getElementById('bulkSaveBtn').disabled = good === 0;
+}
+
+function updateBulkCell(idx, field, val) {
+    if (parsedBulkRows[idx]) parsedBulkRows[idx][field] = val.trim();
+}
+
+async function saveBulkReserves() {
+    const btn = document.getElementById('bulkSaveBtn');
+    btn.disabled = true; btn.textContent = '⏳ Importing…';
+
+    const toSave = parsedBulkRows.filter(r => !r.error && r.firstName.length >= 1);
+    let saved = 0, failed = 0;
+
+    for (const r of toSave) {
+        const notes = r.shirtSize ? 'Shirt size: ' + r.shirtSize : null;
+        const { error } = await saveReserve({
+            first_name: r.firstName,
+            last_name:  r.lastName || '—',
+            phone:      null,
+            email:      null,
+            category:   r.category || null,
+            status:     'interested',
+            notes,
+        });
+        if (error) failed++;
+        else saved++;
+    }
+
+    btn.disabled = false; btn.textContent = '⬆ Import All';
+    bulkModal.hide();
+    alert(`✅ Imported ${saved} reserve(s).${failed ? '\n⚠️ ' + failed + ' failed.' : ''}`);
+    await renderReserves();
+    await renderStats();
+}
+</script>
+</body>
+</html>function adjustOffset(delta) {
     const input = document.getElementById('offsetInput');
     input.value = (parseInt(input.value, 10) || 0) + delta;
     saveOffsetInput();
