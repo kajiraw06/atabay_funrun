@@ -337,6 +337,8 @@
                             <option value="cash">Cash</option>
                             <option value="gcash">GCash</option>
                             <option value="paymaya">PayMaya / Maya</option>
+                            <option value="bank_transfer">Bank Transfer</option>
+                            <option value="landbank">Landbank</option>
                         </select>
                     </div>
                     <div class="col-md-6">
@@ -623,7 +625,7 @@ async function renderTable() {
     }
 
     cachedRegs = regs || [];
-    const payLabels = { gcash: 'GCash 💚', paymaya: 'Maya 💙', cash: 'Cash 💵' };
+    const payLabels = { gcash: 'GCash 💚', paymaya: 'Maya 💙', cash: 'Cash 💵', bank_transfer: 'Bank Transfer 🏦', landbank: 'Landbank 🏦' };
 
     if (!cachedRegs.length) {
         tbody.innerHTML = `<tr><td colspan="10" class="text-center text-muted py-4">No registrations found.</td></tr>`;
